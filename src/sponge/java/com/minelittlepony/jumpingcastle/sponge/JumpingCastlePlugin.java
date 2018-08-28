@@ -22,6 +22,9 @@ import com.minelittlepony.jumpingcastle.api.IMessage;
 import com.minelittlepony.jumpingcastle.payload.DeserializedPayload;
 import com.minelittlepony.jumpingcastle.payload.IBinaryPayload;
 
+import io.netty.buffer.Unpooled;
+import net.minecraft.network.PacketBuffer;
+
 @Plugin(
     id = "jumpingcastle",
     name = "Jumping Castle",
@@ -33,27 +36,38 @@ public class JumpingCastlePlugin implements IMessageBus {
 
     private ChannelBinding.IndexedMessageChannel channel;
 
+    private boolean running;
+
     @Listener
     public void onServerStart(GameInitializationEvent event) {
-        channel = Sponge.getChannelRegistrar().createChannel(this, JumpingCastleImpl.CHANNEL);
+        running = JumpingCastleImpl.instance().setBus(this);
 
-        channel.registerMessage(PayloadData.class, 0, (message, connection, side) -> {
-            if (!(connection instanceof PlayerConnection)) return;
+        if (running) {
+            channel = Sponge.getChannelRegistrar().createChannel(this, JumpingCastleImpl.CHANNEL);
+            channel.registerMessage(PayloadData.class, 0, (message, connection, side) -> {
+                if (!(connection instanceof PlayerConnection)) return;
 
-            PlayerConnection conn = (PlayerConnection)connection;
+                PlayerConnection conn = (PlayerConnection)connection;
 
-            JumpingServer.instance().onPayload(conn.getPlayer().getUniqueId(), new DeserializedPayload(message.payload));
-        });
+                JumpingServer.instance().onPayload(conn.getPlayer().getUniqueId(), new DeserializedPayload(message.payload));
+            });
+        }
     }
 
     @Listener
     public void onPlayerLeave(ClientConnectionEvent.Disconnect event, @Getter("getTargetEntity") Player player) {
-        JumpingServer.instance().onPlayerLeave(player.getUniqueId());
+        if (running) {
+            JumpingServer.instance().onPlayerLeave(player.getUniqueId());
+        }
     }
 
     @Override
     public void sendToServer(String channel, long id, IMessage message, Target target) {
-
+        this.channel.sendToServer(new PayloadData(IBinaryPayload.of(new PacketBuffer(Unpooled.buffer()))
+                .writeString(channel)
+                .writeLong(id)
+                .writeByte((byte)target.ordinal())
+                .writeBinary(message).buff()));
     }
 
     @Override
@@ -77,7 +91,7 @@ public class JumpingCastlePlugin implements IMessageBus {
 
         @Override
         public void readFrom(ChannelBuf buf) {
-            payload = IBinaryPayload.of(buf);
+            payload = ChannelBufBinaryPayload.of(buf);
         }
 
         @Override
