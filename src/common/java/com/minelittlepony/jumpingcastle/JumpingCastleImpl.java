@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.minelittlepony.jumpingcastle.api.IChannel;
 import com.minelittlepony.jumpingcastle.api.JumpingCastle;
+import com.minelittlepony.jumpingcastle.api.Target;
 import com.minelittlepony.jumpingcastle.dsm.MsgHello;
 import com.minelittlepony.jumpingcastle.payload.DeserializedPayload;
 

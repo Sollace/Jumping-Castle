@@ -28,10 +28,10 @@ public final class JumpingServer {
     }
 
     public void onPayload(UUID senderId, DeserializedPayload payload) {
-        if (payload.target.servers) {
+        if (payload.target.isServers()) {
             JumpingCastleImpl.instance().onPayload(payload);
         }
-        if (payload.target.clients) {
+        if (payload.target.isClients()) {
             IBinaryPayload forwarded = payload.payload.reverse();
             IMessageBus bus = JumpingCastleImpl.instance().getBus();
 

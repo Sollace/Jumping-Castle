@@ -14,8 +14,8 @@ import org.bukkit.plugin.messaging.Messenger;
 import com.minelittlepony.jumpingcastle.IMessageBus;
 import com.minelittlepony.jumpingcastle.JumpingCastleImpl;
 import com.minelittlepony.jumpingcastle.JumpingServer;
-import com.minelittlepony.jumpingcastle.Target;
 import com.minelittlepony.jumpingcastle.api.IMessage;
+import com.minelittlepony.jumpingcastle.api.Target;
 import com.minelittlepony.jumpingcastle.payload.DeserializedPayload;
 import com.minelittlepony.jumpingcastle.payload.IBinaryPayload;
 

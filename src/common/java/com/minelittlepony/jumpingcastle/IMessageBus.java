@@ -3,6 +3,7 @@ package com.minelittlepony.jumpingcastle;
 import java.util.UUID;
 
 import com.minelittlepony.jumpingcastle.api.IMessage;
+import com.minelittlepony.jumpingcastle.api.Target;
 import com.minelittlepony.jumpingcastle.payload.IBinaryPayload;
 
 public interface IMessageBus {

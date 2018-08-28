@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.minelittlepony.jumpingcastle.api.IMessage;
 import com.mojang.util.UUIDTypeAdapter;
 
 import io.netty.buffer.ByteBuf;
@@ -12,6 +13,7 @@ public interface IBinaryPayload {
 
     Gson gson = new GsonBuilder()
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
+            .excludeFieldsWithoutExposeAnnotation()
             .create();
 
     static IBinaryPayload of(Object buffer) {
@@ -43,7 +45,7 @@ public interface IBinaryPayload {
         return gson.fromJson(readString(), type);
     }
 
-    default IBinaryPayload writeBinary(Object message) {
+    default IBinaryPayload writeBinary(IMessage message) {
         return writeString(gson.toJson(message));
     }
 
@@ -51,8 +53,7 @@ public interface IBinaryPayload {
         int i = 0;
         int j = 0;
 
-        while (true)
-        {
+        while (true) {
             byte b0 = readByte();
             i |= (b0 & 127) << j++ * 7;
 

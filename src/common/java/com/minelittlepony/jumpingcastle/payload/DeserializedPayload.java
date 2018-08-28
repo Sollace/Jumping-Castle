@@ -1,6 +1,6 @@
 package com.minelittlepony.jumpingcastle.payload;
 
-import com.minelittlepony.jumpingcastle.Target;
+import com.minelittlepony.jumpingcastle.api.Target;
 
 public final class DeserializedPayload {
 
