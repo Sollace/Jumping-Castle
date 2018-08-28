@@ -23,6 +23,8 @@ public interface IBinaryPayload {
 
     <T> T buff();
 
+    byte[] bytes();
+
     long readLong();
 
     IBinaryPayload writeLong(long l);

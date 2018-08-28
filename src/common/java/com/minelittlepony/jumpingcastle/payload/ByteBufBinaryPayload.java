@@ -29,6 +29,10 @@ public interface ByteBufBinaryPayload extends IBinaryPayload {
         return this;
     }
 
+    default byte[] bytes() {
+        return buff().array();
+    }
+
     @Override
     default long readLong() {
         return buff().readLong();
