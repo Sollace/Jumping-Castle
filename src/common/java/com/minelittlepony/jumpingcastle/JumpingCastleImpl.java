@@ -33,10 +33,13 @@ public final class JumpingCastleImpl implements JumpingCastle {
         helloChannel.send(new MsgHello(playerId, channels.keySet()), Target.SERVER);
     }
 
-    public void setBus(IMessageBus bus) {
+    public boolean setBus(IMessageBus bus) {
         if (this.bus == null) {
             this.bus = bus;
+            return true;
         }
+
+        return false;
     }
 
     public IMessageBus getBus() {

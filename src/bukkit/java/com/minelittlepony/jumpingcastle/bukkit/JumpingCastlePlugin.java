@@ -24,9 +24,14 @@ import io.netty.buffer.Unpooled;
 
 public class JumpingCastlePlugin extends JavaPlugin implements Listener, IMessageBus  {
 
+    private boolean running;
+
     @Override
     public void onEnable() {
-        JumpingCastleImpl.instance().setBus(this);
+        running = JumpingCastleImpl.instance().setBus(this);
+
+        if (!running) return;
+
         Bukkit.getPluginManager().registerEvents(this, this);
 
         Messenger messenger = Bukkit.getMessenger();
@@ -39,7 +44,9 @@ public class JumpingCastlePlugin extends JavaPlugin implements Listener, IMessag
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
-        JumpingServer.instance().onPlayerLeave(event.getPlayer().getUniqueId());
+        if (running) {
+            JumpingServer.instance().onPlayerLeave(event.getPlayer().getUniqueId());
+        }
     }
 
     @Override

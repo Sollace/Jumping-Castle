@@ -34,6 +34,8 @@ import net.minecraft.network.play.server.SPacketJoinGame;
 public class LiteModJumpingCastle implements LiteMod, JoinGameListener, PluginChannelListener, ServerPluginChannelListener, ServerPlayerListener, IMessageBus {
     private static final List<String> CHANNEL_IDENTIFIERS = Lists.newArrayList(JumpingCastleImpl.CHANNEL);
 
+    private boolean running;
+
 	@Override
 	public String getName() {
 		return "@NAME@";
@@ -46,7 +48,7 @@ public class LiteModJumpingCastle implements LiteMod, JoinGameListener, PluginCh
 
 	@Override
 	public void init(File configPath) {
-	    JumpingCastleImpl.instance().setBus(this);
+	    running = JumpingCastleImpl.instance().setBus(this);
 	}
 
 	@Override
@@ -56,7 +58,9 @@ public class LiteModJumpingCastle implements LiteMod, JoinGameListener, PluginCh
 
     @Override
     public void onJoinGame(INetHandler netHandler, SPacketJoinGame joinGamePacket, ServerData serverData, RealmsServer realmsServer) {
-        JumpingCastleImpl.instance().sayHello(Minecraft.getMinecraft().player.getGameProfile().getId());
+        if (running) {
+            JumpingCastleImpl.instance().sayHello(Minecraft.getMinecraft().player.getGameProfile().getId());
+        }
     }
 
     @Override
@@ -66,14 +70,14 @@ public class LiteModJumpingCastle implements LiteMod, JoinGameListener, PluginCh
 
     @Override
     public void onCustomPayload(String channel, PacketBuffer data) {
-        if (JumpingCastleImpl.CHANNEL.equalsIgnoreCase(channel)) {
+        if (running && JumpingCastleImpl.CHANNEL.equalsIgnoreCase(channel)) {
             JumpingCastleImpl.instance().onPayload(new DeserializedPayload(IBinaryPayload.of(data)));
         }
     }
 
     @Override
     public void onCustomPayload(EntityPlayerMP sender, String channel, PacketBuffer data) {
-        if (JumpingCastleImpl.CHANNEL.equalsIgnoreCase(channel)) {
+        if (running && JumpingCastleImpl.CHANNEL.equalsIgnoreCase(channel)) {
             JumpingServer.instance().onPayload(sender.getGameProfile().getId(), new DeserializedPayload(IBinaryPayload.of(data)));
         }
     }
@@ -111,6 +115,8 @@ public class LiteModJumpingCastle implements LiteMod, JoinGameListener, PluginCh
 
     @Override
     public void onPlayerLogout(EntityPlayerMP player) {
-        JumpingServer.instance().onPlayerLeave(player.getGameProfile().getId());
+        if (running) {
+            JumpingServer.instance().onPlayerLeave(player.getGameProfile().getId());
+        }
     }
 }

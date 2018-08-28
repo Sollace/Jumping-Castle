@@ -38,22 +38,26 @@ public class ForgeModJumpingCastle implements IMessageBus {
 
     private FMLEventChannel bus;
 
+    private boolean running;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        JumpingCastleImpl.instance().setBus(this);
+        running = JumpingCastleImpl.instance().setBus(this);
 
-        bus = NetworkRegistry.INSTANCE.newEventDrivenChannel(JumpingCastleImpl.CHANNEL);
+        if (running) {
+            bus = NetworkRegistry.INSTANCE.newEventDrivenChannel(JumpingCastleImpl.CHANNEL);
 
-        bus.register(this);
+            bus.register(this);
+        }
     }
 
     @SubscribeEvent
     public void onServerPacket(ServerCustomPacketEvent event) throws IOException {
-        if (JumpingCastleImpl.CHANNEL.equalsIgnoreCase(event.getPacket().channel())) {
+        if (running && JumpingCastleImpl.CHANNEL.equalsIgnoreCase(event.getPacket().channel())) {
             NetHandlerPlayServer net = (NetHandlerPlayServer)event.getHandler();
 
             JumpingServer.instance().onPayload(net.player.getGameProfile().getId(), new DeserializedPayload(IBinaryPayload.of(event.getPacket().payload())));
@@ -62,19 +66,23 @@ public class ForgeModJumpingCastle implements IMessageBus {
 
     @SubscribeEvent
     public void onClientPacket(ClientCustomPacketEvent event) throws IOException {
-        if (JumpingCastleImpl.CHANNEL.equalsIgnoreCase(event.getPacket().channel())) {
+        if (running && JumpingCastleImpl.CHANNEL.equalsIgnoreCase(event.getPacket().channel())) {
             JumpingCastleImpl.instance().onPayload(new DeserializedPayload(IBinaryPayload.of(event.getPacket().payload())));
         }
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerLoggedInEvent event) {
-        JumpingCastleImpl.instance().sayHello(event.player.getGameProfile().getId());
+        if (running) {
+            JumpingCastleImpl.instance().sayHello(event.player.getGameProfile().getId());
+        }
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerLoggedOutEvent event) {
-        JumpingServer.instance().onPlayerLeave(event.player.getGameProfile().getId());
+        if (running) {
+            JumpingServer.instance().onPlayerLeave(event.player.getGameProfile().getId());
+        }
     }
 
     @Override
