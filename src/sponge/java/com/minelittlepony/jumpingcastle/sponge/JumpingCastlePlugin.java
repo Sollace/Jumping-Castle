@@ -23,10 +23,11 @@ import com.minelittlepony.jumpingcastle.payload.DeserializedPayload;
 import com.minelittlepony.jumpingcastle.payload.IBinaryPayload;
 
 @Plugin(
-        id = "jumpingcastle",
-        name = "Jumping Castle",
-        authors = "sollace",
-        description = "A universal transport protocol for synchronising data across minecraft clients and servers"
+    id = "jumpingcastle",
+    name = "Jumping Castle",
+    authors = "sollace",
+    version = "@VERSION@",
+    description = "A universal transport protocol for synchronising data across minecraft clients and servers"
 )
 public class JumpingCastlePlugin implements IMessageBus {
 

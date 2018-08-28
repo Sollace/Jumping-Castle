@@ -29,9 +29,11 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerCustomPacketE
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 
-@Mod(modid = "jumpingcastle",
+@Mod(
+    modid = "jumpingcastle",
     name = "Jumping Castle",
-    version ="%VERSION%")
+    version ="@VERSION@"
+)
 public class ForgeModJumpingCastle implements IMessageBus {
 
     private FMLEventChannel bus;

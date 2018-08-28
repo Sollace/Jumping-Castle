@@ -1,3 +1,3 @@
 name: JumpingCastle
-version: 1.0.0
+version: @VERSION@
 main: com.minelittlepony.jumpingcastle.bukkit.JumpingCastlePlugin
