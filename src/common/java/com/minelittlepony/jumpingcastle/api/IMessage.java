@@ -1,5 +1,7 @@
 package com.minelittlepony.jumpingcastle.api;
 
-public interface IMessage {
+import java.io.Serializable;
+
+public interface IMessage extends Serializable {
 
 }

@@ -1,35 +1,48 @@
 package com.minelittlepony.jumpingcastle.payload;
 
+import java.util.UUID;
+
 import com.google.gson.Gson;
-import com.minelittlepony.jumpingcastle.api.IMessage;
+import com.google.gson.GsonBuilder;
+import com.mojang.util.UUIDTypeAdapter;
 
 import io.netty.buffer.ByteBuf;
 
 public interface IBinaryPayload {
 
-    Gson json = new Gson();
+    Gson gson = new GsonBuilder()
+            .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
+            .create();
 
     static IBinaryPayload of(Object buffer) {
         if (buffer instanceof ByteBuf) {
-            return new ByteBufBinaryPayload((ByteBuf)buffer);
+            return ByteBufBinaryPayload.of((ByteBuf)buffer);
         }
         return null;
     }
 
+    <T> T buff();
+
     long readLong();
 
+    IBinaryPayload writeLong(long l);
+
     byte readByte();
+
+    IBinaryPayload writeByte(byte b);
 
     String readString();
 
     IBinaryPayload writeString(String s);
 
-    default <T extends IMessage> T readBinary(Class<T> type) {
-        return json.fromJson(readString(), type);
+    IBinaryPayload reverse();
+
+    default <T> T readBinary(Class<T> type) {
+        return gson.fromJson(readString(), type);
     }
 
-    default <T extends IMessage> IBinaryPayload writeBinary(T message) {
-        return writeString(json.toJson(message));
+    default IBinaryPayload writeBinary(Object message) {
+        return writeString(gson.toJson(message));
     }
 
     default public int readInt() {

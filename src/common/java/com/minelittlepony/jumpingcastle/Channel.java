@@ -7,12 +7,14 @@ import java.util.Map;
 import com.minelittlepony.jumpingcastle.api.IChannel;
 import com.minelittlepony.jumpingcastle.api.IMessage;
 import com.minelittlepony.jumpingcastle.api.IMessageHandler;
+import com.minelittlepony.jumpingcastle.payload.DeserializedPayload;
 import com.minelittlepony.jumpingcastle.payload.IBinaryPayload;
 
 class Channel implements IChannel {
 
     private final String name;
 
+    private final Map<Class<?>, Long> ids = new HashMap<>();
     private final Map<Long, Entry<? extends IMessage>> handlers = new HashMap<>();
 
     public Channel(String channelName) {
@@ -21,21 +23,23 @@ class Channel implements IChannel {
 
     @Override
     public <T extends IMessage> IChannel consume(Class<T> messageType, IMessageHandler<T> handler) {
-        handlers.put(computeUniqueId(messageType), new Entry<T>(messageType, handler));
+        long id = computeUniqueId(messageType);
+        ids.put(messageType, id);
+        handlers.put(id, new Entry<T>(messageType, handler));
         return this;
     }
 
     @Override
     public IChannel send(IMessage message, Target target) {
-        // TODO Auto-generated method stub
+        JumpingCastleImpl.instance().getBus().sendToServer(name, ids.get(message.getClass()), message, target);
         return null;
     }
 
-    public void onPayload(IBinaryPayload payload) {
-        @SuppressWarnings("unchecked")
-        Entry<IMessage> entry = (Entry<IMessage>)handlers.get(payload.readLong());
+    public void onPayload(DeserializedPayload payload) {
+        Entry<? extends IMessage> entry = handlers.get(payload.objectType);
+
         if (entry != null) {
-            entry.handler.handleMessage(payload.readBinary(entry.handleType), this);
+            entry.onPayload(payload.payload);
         }
     }
 
@@ -47,6 +51,10 @@ class Channel implements IChannel {
         private Entry(Class<T> handleType, IMessageHandler<T> handler) {
             this.handleType = handleType;
             this.handler = handler;
+        }
+
+        private void onPayload(IBinaryPayload payload) {
+            handler.onPayload(payload.readBinary(handleType), Channel.this);
         }
     }
 

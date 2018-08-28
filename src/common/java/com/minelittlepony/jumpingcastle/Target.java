@@ -1,7 +1,7 @@
 package com.minelittlepony.jumpingcastle;
 
 public enum Target {
-    ALL_CLIENTS(true, false),
+    CLIENTS(true, false),
     SERVER(false, true),
     SERVER_AND_CLIENTS(true, true);
 
