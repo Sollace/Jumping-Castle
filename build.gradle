@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+				mavenCentral()
         jcenter()
         maven {
             name 'forge'
@@ -63,6 +64,30 @@ sourceSets {
 				compileClasspath += common.compileClasspath
         ext.refMap = project.refCore
     }
+}
+
+repositories {
+	maven {
+		name = 'sponge'
+		url = 'http://repo.spongepowered.org/maven'
+	}
+	maven {
+		name = 'spigot'
+		url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+	}
+	maven {
+		name = 'sonatype'
+		url = 'https://oss.sonatype.org/content/groups/public/'
+	}
+}
+
+dependencies {
+	compile 'com.google.code.findbugs:jsr305:3.0.1'
+	
+	compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
+	compileOnly 'org.bukkit:bukkit:1.12-R0.1-SNAPSHOT'
+	
+	runtime('org.spongepowered:spongevanilla:1.12.1-7.0.0-BETA-320')
 }
 
 processResources{
