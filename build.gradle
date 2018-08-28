@@ -54,9 +54,6 @@ sourceSets {
 		bukkit {
 				compileClasspath += common.compileClasspath
 		}
-		spigot {
-				compileClasspath += common.compileClasspath
-		}
 		forge {
 				compileClasspath += common.compileClasspath
 		}
