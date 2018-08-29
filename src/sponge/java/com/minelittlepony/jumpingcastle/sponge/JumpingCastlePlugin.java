@@ -49,7 +49,7 @@ public class JumpingCastlePlugin implements IMessageBus {
 
                 PlayerConnection conn = (PlayerConnection)connection;
 
-                JumpingServer.instance().onPayload(conn.getPlayer().getUniqueId(), new DeserializedPayload(message.payload));
+                JumpingServer.instance().onPayload(conn.getPlayer().getProfile().getUniqueId(), new DeserializedPayload(message.payload));
             });
         }
     }
@@ -57,7 +57,7 @@ public class JumpingCastlePlugin implements IMessageBus {
     @Listener
     public void onPlayerLeave(ClientConnectionEvent.Disconnect event, @Getter("getTargetEntity") Player player) {
         if (running) {
-            JumpingServer.instance().onPlayerLeave(player.getUniqueId());
+            JumpingServer.instance().onPlayerLeave(player.getProfile().getUniqueId());
         }
     }
 
