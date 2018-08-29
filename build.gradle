@@ -103,8 +103,8 @@ sourceSets {
     }
 }
 
-processResources{
-    def props = [
+jar {
+	def props = [
     	modid: project.modid,
     	name: project.name,
     	description: project.description,
@@ -115,39 +115,34 @@ processResources{
     ]
     inputs.properties props
     
-    from(sourceSets.client.resources.srcDirs) {
-        include 'mcmod.info'
-        
-        expand props
-    }
-    from(sourceSets.forge.resources.srcDirs) {
-        include 'mcmod.info'
-        
-        expand props
-    }
-    
-    // copy everything else
-    from(sourceSets.client.resources.srcDirs) {
-        exclude 'litemod.json'
-    }
-    from(sourceSets.forge.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
-
-jar {
 	from sourceSets.common.output
-	from sourceSets.bukkit.output
-	from sourceSets.forge.output
+	
+	from(sourceSets.bukkit.output) {
+		exclude 'plugin.yml'
+	}
+	from(sourceSets.bukkit.output) {
+		include 'plugin.yml'
+		expand props
+	}
+	
 	from sourceSets.sponge.output
-	classifier 'server'
-	extension 'jar'
-}
-
-jar {
-	from sourceSets.common.output
-	from sourceSets.client.output
-	from sourceSets.forge.output
-	classifier 'client'
+	
+	from(sourceSets.client.output) {
+		exclude 'litemod.json'
+	}
+	from(sourceSets.client.output) {
+		include 'litemod.json'
+		expand props
+	}
+	
+	from(sourceSets.forge.output) {
+		exclude 'mcmod.info'
+	}
+	from(sourceSets.forge.output) {
+		include 'mcmod.info'
+		expand props
+	}
+	
+	classifier 'universal'
 	extension 'jar'
 }
