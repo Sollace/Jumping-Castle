@@ -13,10 +13,9 @@ There's two things you need to get started in using JumpingCastle.
 First, mods will want to create a class for each of the types of messages they want to handle. JumpingCastle itself implements one of its own:
 
 ```
+// unique id to distenguish this message from others
+@IMessage.Id(0)
 public class MsgHello implements IMessage {
-	
-	private static final long serialVersionId = 1L;
-	
 	@Expose
 	List<String> channels;
 	
@@ -25,7 +24,7 @@ public class MsgHello implements IMessage {
 }
 ```
 
-That's all you need! The serialVersionId can be any number you want, but it has to be unique, and any fields marked with @Expose will be transmitted and made available on the recieving end.
+That's all you need! Any fields marked with @Expose will be transmitted and made available on the recieving end.
 
 Now how do you _handle_ these messages?
 

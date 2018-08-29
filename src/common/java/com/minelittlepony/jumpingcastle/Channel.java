@@ -1,6 +1,5 @@
 package com.minelittlepony.jumpingcastle;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +14,6 @@ class Channel implements IChannel {
 
     private final String name;
 
-    private final Map<Class<?>, Long> ids = new HashMap<>();
     private final Map<Long, Entry<? extends IMessage>> handlers = new HashMap<>();
 
     public Channel(String channelName) {
@@ -24,15 +22,13 @@ class Channel implements IChannel {
 
     @Override
     public <T extends IMessage> IChannel consume(Class<T> messageType, IMessageHandler<T> handler) {
-        long id = computeUniqueId(messageType);
-        ids.put(messageType, id);
-        handlers.put(id, new Entry<T>(messageType, handler));
+        handlers.put(IMessage.identifier(messageType), new Entry<T>(messageType, handler));
         return this;
     }
 
     @Override
     public IChannel send(IMessage message, Target target) {
-        JumpingCastleImpl.instance().getBus().sendToServer(name, ids.get(message.getClass()), message, target);
+        JumpingCastleImpl.instance().getBus().sendToServer(name, message.identifier(), message, target);
         return null;
     }
 
@@ -56,16 +52,6 @@ class Channel implements IChannel {
 
         private void onPayload(IBinaryPayload payload) {
             handler.onPayload(payload.readBinary(handleType), Channel.this);
-        }
-    }
-
-    private static long computeUniqueId(Class<?> type) {
-        try {
-            Field f = type.getField("serialVersionUID");
-            f.setAccessible(true);
-            return (long)f.get(null);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            return -1;
         }
     }
 }

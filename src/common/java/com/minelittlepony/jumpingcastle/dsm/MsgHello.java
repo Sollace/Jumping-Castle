@@ -8,8 +8,8 @@ import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
 import com.minelittlepony.jumpingcastle.api.IMessage;
 
+@IMessage.Id(0)
 public class MsgHello implements IMessage {
-    private static final long serialVersionUID = -1056806779835376989L;
 
     @Expose
     public UUID playerId;
