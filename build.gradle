@@ -33,7 +33,7 @@ minecraft {
     version = project.mcVersion
     mappings = project.mcMappings
     runDir = 'run'
-    replace '@MODID', project.modid
+    replace '@MODID@', project.modid
     replace '@NAME@', project.name
     replace '@AUTHOR@', project.author
 	replace '@VERSION@', ver
