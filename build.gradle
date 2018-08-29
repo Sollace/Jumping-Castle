@@ -73,7 +73,7 @@ sourceSets {
 	sponge {
 		dependencies {
 			compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
-			runtime('org.spongepowered:spongevanilla:1.12.1-7.0.0-BETA-320')
+		//	runtime('org.spongepowered:spongevanilla:1.12.1-7.0.0-BETA-320')
 		}
 		
 		compileClasspath += main.compileClasspath
@@ -81,7 +81,7 @@ sourceSets {
 	}
 	bukkit {
 		dependencies {
-			compileOnly 'org.bukkit:bukkit:1.12-R0.1-SNAPSHOT'
+		//	compileOnly 'org.bukkit:bukkit:1.12-R0.1-SNAPSHOT'
 		}
 		
 		compileClasspath += main.compileClasspath
