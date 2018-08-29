@@ -28,7 +28,7 @@ class Channel implements IChannel {
 
     @Override
     public IChannel send(IMessage message, Target target) {
-        JumpingCastleImpl.instance().getBus().sendToServer(name, message.identifier(), message, target);
+        JumpingCastleImpl.instance().getBus().sendToServer(name, IMessage.identifier(message), message, target);
         return null;
     }
 

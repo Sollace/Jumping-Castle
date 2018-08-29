@@ -13,18 +13,18 @@ import java.lang.annotation.Target;
  *
  */
 public interface IMessage {
+    /**
+     * Identifier used to distenguish different messages within the same channel.
+     */
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
     public @interface Id {
-        /**
-         * Identifier used to distenguish different messages within the same channel.
-         */
         long value();
     }
 
-    default long identifier() {
-        return identifier(getClass());
+    static long identifier(IMessage msg) {
+        return identifier(msg.getClass());
     }
 
     static long identifier(Class<? extends IMessage> cls) {
