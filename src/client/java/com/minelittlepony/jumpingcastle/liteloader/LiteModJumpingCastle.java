@@ -1,4 +1,4 @@
-package com.minelitlepony.jumpingcastle.liteloader;
+package com.minelittlepony.jumpingcastle.liteloader;
 
 import java.io.File;
 import java.util.List;
