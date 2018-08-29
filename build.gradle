@@ -47,23 +47,6 @@ mixin {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-sourceSets {
-	common { }
-	sponge {
-		compileClasspath += common.compileClasspath
-	}
-	bukkit {
-		compileClasspath += common.compileClasspath
-	}
-	forge {
-		compileClasspath += common.compileClasspath
-	}
-    client {
-		compileClasspath += common.compileClasspath
-        ext.refMap = project.refCore
-    }
-}
-
 repositories {
 	maven {
 		name = 'sponge'
@@ -81,11 +64,43 @@ repositories {
 
 dependencies {
 	compile 'com.google.code.findbugs:jsr305:3.0.1'
-	
-	compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
-	compileOnly 'org.bukkit:bukkit:1.12-R0.1-SNAPSHOT'
-	
-	runtime('org.spongepowered:spongevanilla:1.12.1-7.0.0-BETA-320')
+}
+
+sourceSets {
+	common {
+		compileClasspath += main.compileClasspath
+	}
+	sponge {
+		dependencies {
+			compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
+			runtime('org.spongepowered:spongevanilla:1.12.1-7.0.0-BETA-320')
+		}
+		
+		compileClasspath += main.compileClasspath
+		compileClasspath += common.output
+	}
+	bukkit {
+		dependencies {
+			compileOnly 'org.bukkit:bukkit:1.12-R0.1-SNAPSHOT'
+		}
+		
+		compileClasspath += main.compileClasspath
+		compileClasspath += common.output
+	}
+	forge {
+		dependencies {
+		//	compileOnly 'net.minecraftforge:forge:1.12.2-14.23.2.2654'
+		}
+		compileClasspath += main.compileClasspath
+		compileClasspath += common.output
+	}
+    client {
+    	compileClasspath += main.compileClasspath
+		compileClasspath += common.output
+    }
+    main {
+    	
+    }
 }
 
 processResources{
@@ -118,4 +133,21 @@ processResources{
     from(sourceSets.forge.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+jar {
+	from sourceSets.common.output
+	from sourceSets.bukkit.output
+	from sourceSets.forge.output
+	from sourceSets.sponge.output
+	classifier 'server'
+	extension 'jar'
+}
+
+jar {
+	from sourceSets.common.output
+	from sourceSets.client.output
+	from sourceSets.forge.output
+	classifier 'client'
+	extension 'jar'
 }
