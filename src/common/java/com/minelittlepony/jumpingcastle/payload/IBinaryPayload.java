@@ -27,6 +27,8 @@ public interface IBinaryPayload {
 
     byte[] bytes();
 
+    byte[] readToEnd();
+
     long readLong();
 
     IBinaryPayload writeLong(long l);
@@ -38,6 +40,8 @@ public interface IBinaryPayload {
     String readString();
 
     IBinaryPayload writeString(String s);
+
+    IBinaryPayload writeBytes(byte[] bytes);
 
     IBinaryPayload reverse();
 

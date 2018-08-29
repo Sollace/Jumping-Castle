@@ -33,6 +33,12 @@ public interface ByteBufBinaryPayload extends IBinaryPayload {
         return buff().array();
     }
 
+    default byte[] readToEnd() {
+        byte[] bytes = new byte[buff().writerIndex() - buff().readerIndex()];
+        buff().readBytes(bytes);
+        return bytes;
+    }
+
     @Override
     default long readLong() {
         return buff().readLong();
@@ -47,6 +53,12 @@ public interface ByteBufBinaryPayload extends IBinaryPayload {
     @Override
     default IBinaryPayload reverse() {
         buff().readerIndex(0);
+        return this;
+    }
+
+    @Override
+    default IBinaryPayload writeBytes(byte[] bytes) {
+        buff().writeBytes(bytes);
         return this;
     }
 

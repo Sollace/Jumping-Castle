@@ -29,8 +29,14 @@ public interface ChannelBufBinaryPayload extends IBinaryPayload {
         return this;
     }
 
+    @Override
     default byte[] bytes() {
         return buff().array();
+    }
+
+    @Override
+    default byte[] readToEnd() {
+        return buff().readBytes(buff().available());
     }
 
     @Override
@@ -53,6 +59,12 @@ public interface ChannelBufBinaryPayload extends IBinaryPayload {
     @Override
     default IBinaryPayload writeString(String s) {
         buff().writeString(s);
+        return this;
+    }
+
+    @Override
+    default IBinaryPayload writeBytes(byte[] bytes) {
+        buff().writeBytes(bytes);
         return this;
     }
 }
