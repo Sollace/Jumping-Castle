@@ -27,7 +27,7 @@ public final class JumpingCastleImpl implements JumpingCastle {
     private IChannel helloChannel;
 
     private JumpingCastleImpl() {
-        helloChannel = JumpingCastle.listen(CHANNEL).consume(MsgHello.class, JumpingServer.instance()::onHello);
+        helloChannel = listen(CHANNEL).consume(MsgHello.class, JumpingServer.instance()::onHello);
     }
 
     public void sayHello(UUID playerId) {
