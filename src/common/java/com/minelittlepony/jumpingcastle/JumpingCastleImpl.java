@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.minelittlepony.jumpingcastle.api.IChannel;
 import com.minelittlepony.jumpingcastle.api.JumpingCastle;
 import com.minelittlepony.jumpingcastle.api.Target;
@@ -11,6 +14,8 @@ import com.minelittlepony.jumpingcastle.dsm.MsgHello;
 import com.minelittlepony.jumpingcastle.payload.DeserializedPayload;
 
 public final class JumpingCastleImpl implements JumpingCastle {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final JumpingCastleImpl INSTANCE = new JumpingCastleImpl();
 
@@ -56,6 +61,9 @@ public final class JumpingCastleImpl implements JumpingCastle {
     }
 
     public void onPayload(DeserializedPayload payload) {
+        if (payload.protocol != PROTOCOL) {
+            LOGGER.warn("Protocol version mismatch. Current version is %d. Payload arrived with version %d", PROTOCOL, payload.protocol);
+        }
         if (channels.containsKey(payload.channel)) {
             channels.get(payload.channel).onPayload(payload);
         }
