@@ -39,5 +39,3 @@ JumpingCastle.listen("MyChannelName").consume(MsgHello.class, (msg, channel) -> 
 		// channel.send(new MyResponse(), Target.CLIENTS);
 });
 ```
-
-This is a blank template because setting up gradle is a b*****.
