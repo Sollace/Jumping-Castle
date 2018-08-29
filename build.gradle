@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-				mavenCentral()
+		mavenCentral()
         jcenter()
         maven {
             name 'forge'
@@ -33,8 +33,11 @@ minecraft {
     version = project.mcVersion
     mappings = project.mcMappings
     runDir = 'run'
+    replace '@MODID', project.modid
     replace '@NAME@', project.name
-		replace '@VERSION@', ver
+    replace '@AUTHOR@', project.author
+	replace '@VERSION@', ver
+	replace '@DESCRIPTION@', project.description
 }
 
 mixin {
@@ -45,20 +48,18 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 sourceSets {
-		common {
-				
-		}
-		sponge {
-				compileClasspath += common.compileClasspath
-		}
-		bukkit {
-				compileClasspath += common.compileClasspath
-		}
-		forge {
-				compileClasspath += common.compileClasspath
-		}
+	common { }
+	sponge {
+		compileClasspath += common.compileClasspath
+	}
+	bukkit {
+		compileClasspath += common.compileClasspath
+	}
+	forge {
+		compileClasspath += common.compileClasspath
+	}
     client {
-				compileClasspath += common.compileClasspath
+		compileClasspath += common.compileClasspath
         ext.refMap = project.refCore
     }
 }
@@ -89,18 +90,32 @@ dependencies {
 
 processResources{
     def props = [
+    	modid: project.modid,
+    	name: project.name,
+    	description: project.description,
         version: ver,
+        revision: project.buildRevision,
         mcversion: project.mcVersion,
-        revision: project.buildRevision
+        author: project.author
     ]
     inputs.properties props
-    from(sourceSets.main.resources.srcDirs) {
-        include 'litemod.json'
+    
+    from(sourceSets.client.resources.srcDirs) {
+        include 'mcmod.info'
+        
+        expand props
+    }
+    from(sourceSets.forge.resources.srcDirs) {
+        include 'mcmod.info'
+        
         expand props
     }
     
-    // copy everything else, thats not the litemod.json
-    from(sourceSets.main.resources.srcDirs) {
+    // copy everything else
+    from(sourceSets.client.resources.srcDirs) {
         exclude 'litemod.json'
+    }
+    from(sourceSets.forge.resources.srcDirs) {
+        exclude 'mcmod.info'
     }
 }

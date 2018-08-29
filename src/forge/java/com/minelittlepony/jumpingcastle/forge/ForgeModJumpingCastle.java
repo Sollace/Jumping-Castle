@@ -30,8 +30,8 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 
 @Mod(
-    modid = "jumpingcastle",
-    name = "Jumping Castle",
+    modid = "@MODID@",
+    name = "@NAME@",
     version ="@VERSION@"
 )
 public class ForgeModJumpingCastle implements IMessageBus {

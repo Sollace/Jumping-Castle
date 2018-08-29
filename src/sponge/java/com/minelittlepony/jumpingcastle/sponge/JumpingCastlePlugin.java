@@ -26,11 +26,11 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
 
 @Plugin(
-    id = "jumpingcastle",
-    name = "Jumping Castle",
-    authors = "sollace",
+    id = "@MODID@",
+    name = "@NAME@",
+    authors = "@AUTHOR@",
     version = "@VERSION@",
-    description = "A universal transport protocol for synchronising data across minecraft clients and servers"
+    description = "@DESCRIPTION@"
 )
 public class JumpingCastlePlugin implements IMessageBus {
 
