@@ -32,6 +32,7 @@ description = project.name
 minecraft {
     version = project.mcVersion
     mappings = project.mcMappings
+    makeObfSourceJar = false
     runDir = 'run'
     replace '@MODID@', project.modid
     replace '@NAME@', project.name
