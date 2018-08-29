@@ -44,12 +44,16 @@ public class JumpingCastlePlugin implements IMessageBus {
 
         if (running) {
             channel = Sponge.getChannelRegistrar().createChannel(this, JumpingCastleImpl.CHANNEL);
-            channel.registerMessage(PayloadData.class, 0, (message, connection, side) -> {
+            channel.registerMessage(PayloadData.class, JumpingCastleImpl.PROTOCOL, (message, connection, side) -> {
                 if (!(connection instanceof PlayerConnection)) return;
 
                 PlayerConnection conn = (PlayerConnection)connection;
 
-                JumpingServer.instance().onPayload(conn.getPlayer().getProfile().getUniqueId(), new DeserializedPayload(message.payload));
+                if (side.isClient()) {
+                    JumpingCastleImpl.instance().onPayload(message.payload());
+                } else {
+                    JumpingServer.instance().onPayload(conn.getPlayer().getProfile().getUniqueId(), message.payload());
+                }
             });
         }
     }
@@ -79,14 +83,14 @@ public class JumpingCastlePlugin implements IMessageBus {
 
     class PayloadData implements Message {
 
-        IBinaryPayload payload;
+        private IBinaryPayload payload;
 
         public PayloadData() {
 
         }
 
-        public PayloadData(IBinaryPayload payload) {
-            this.payload = payload;
+        public PayloadData(IBinaryPayload data) {
+            payload = data;
         }
 
         @Override
@@ -99,5 +103,8 @@ public class JumpingCastlePlugin implements IMessageBus {
             buf.writeBytes(payload.bytes());
         }
 
+        public DeserializedPayload payload() {
+            return new DeserializedPayload(JumpingCastleImpl.PROTOCOL, payload);
+        }
     }
 }

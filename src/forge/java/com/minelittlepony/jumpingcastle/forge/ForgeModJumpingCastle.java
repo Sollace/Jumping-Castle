@@ -89,6 +89,7 @@ public class ForgeModJumpingCastle implements IMessageBus {
     @Override
     public void sendToServer(String channel, long id, IMessage message, Target target) {
         bus.sendToServer(new FMLProxyPacket(IBinaryPayload.of(new PacketBuffer(Unpooled.buffer()))
+                .writeByte(JumpingCastleImpl.PROTOCOL)
                 .writeString(channel)
                 .writeLong(id)
                 .writeByte((byte)target.ordinal())

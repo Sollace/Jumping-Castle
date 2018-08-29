@@ -15,6 +15,7 @@ public final class JumpingCastleImpl implements JumpingCastle {
     private static final JumpingCastleImpl INSTANCE = new JumpingCastleImpl();
 
     public static final String CHANNEL = "JUMPIN";
+    public static final byte PROTOCOL = 0;
 
     public static JumpingCastleImpl instance() {
         return INSTANCE;

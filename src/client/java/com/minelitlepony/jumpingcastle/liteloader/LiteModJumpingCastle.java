@@ -85,6 +85,7 @@ public class LiteModJumpingCastle implements LiteMod, JoinGameListener, PluginCh
     @Override
     public void sendToServer(String channel, long id, IMessage message, Target target) {
         ClientPluginChannels.sendMessage(JumpingCastleImpl.CHANNEL, IBinaryPayload.of(new PacketBuffer(Unpooled.buffer()))
+                .writeByte(JumpingCastleImpl.PROTOCOL)
                 .writeString(channel)
                 .writeLong(id)
                 .writeByte((byte)target.ordinal())
