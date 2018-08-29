@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-		mavenCentral()
+        mavenCentral()
         jcenter()
         maven {
             name 'forge'
@@ -36,8 +36,8 @@ minecraft {
     replace '@MODID@', project.modid
     replace '@NAME@', project.name
     replace '@AUTHOR@', project.author
-	replace '@VERSION@', ver
-	replace '@DESCRIPTION@', project.description
+    replace '@VERSION@', ver
+    replace '@DESCRIPTION@', project.description
 }
 
 mixin {
@@ -48,101 +48,101 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-	maven {
-		name = 'sponge'
-		url = 'http://repo.spongepowered.org/maven'
-	}
-	maven {
-		name = 'spigot'
-		url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-	}
-	maven {
-		name = 'sonatype'
-		url = 'https://oss.sonatype.org/content/groups/public/'
-	}
+  maven {
+    name = 'sponge'
+    url = 'http://repo.spongepowered.org/maven'
+  }
+  maven {
+    name = 'spigot'
+    url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+  }
+  maven {
+    name = 'sonatype'
+    url = 'https://oss.sonatype.org/content/groups/public/'
+  }
 }
 
 dependencies {
-	compile 'com.google.code.findbugs:jsr305:3.0.1'
+  compile 'com.google.code.findbugs:jsr305:3.0.1'
 }
 
 sourceSets {
-	common {
-		compileClasspath += main.compileClasspath
-	}
-	sponge {
-		dependencies {
-			compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
-		//	runtime('org.spongepowered:spongevanilla:1.12.1-7.0.0-BETA-320')
-		}
-		
-		compileClasspath += main.compileClasspath
-		compileClasspath += common.output
-	}
-	bukkit {
-		dependencies {
-		//	compileOnly 'org.bukkit:bukkit:1.12-R0.1-SNAPSHOT'
-		}
-		
-		compileClasspath += main.compileClasspath
-		compileClasspath += common.output
-	}
-	forge {
-		dependencies {
-		//	compileOnly 'net.minecraftforge:forge:1.12.2-14.23.2.2654'
-		}
-		compileClasspath += main.compileClasspath
-		compileClasspath += common.output
-	}
+  common {
+    compileClasspath += main.compileClasspath
+  }
+  sponge {
+    dependencies {
+      compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
+    //  runtime('org.spongepowered:spongevanilla:1.12.1-7.0.0-BETA-320')
+    }
+
+    compileClasspath += main.compileClasspath
+    compileClasspath += common.output
+  }
+  bukkit {
+    dependencies {
+    //  compileOnly 'org.bukkit:bukkit:1.12-R0.1-SNAPSHOT'
+    }
+
+    compileClasspath += main.compileClasspath
+    compileClasspath += common.output
+  }
+  forge {
+    dependencies {
+    //  compileOnly 'net.minecraftforge:forge:1.12.2-14.23.2.2654'
+    }
+    compileClasspath += main.compileClasspath
+    compileClasspath += common.output
+  }
     client {
-    	compileClasspath += main.compileClasspath
-		compileClasspath += common.output
+      compileClasspath += main.compileClasspath
+    compileClasspath += common.output
     }
     main {
-    	
+
     }
 }
 
 jar {
-	def props = [
-    	modid: project.modid,
-    	name: project.name,
-    	description: project.description,
+  def props = [
+      modid: project.modid,
+      name: project.name,
+      description: project.description,
         version: ver,
         revision: project.buildRevision,
         mcversion: project.mcVersion,
         author: project.author
     ]
     inputs.properties props
-    
-	from sourceSets.common.output
-	
-	from(sourceSets.bukkit.output) {
-		exclude 'plugin.yml'
-	}
-	from(sourceSets.bukkit.output) {
-		include 'plugin.yml'
-		expand props
-	}
-	
-	from sourceSets.sponge.output
-	
-	from(sourceSets.client.output) {
-		exclude 'litemod.json'
-	}
-	from(sourceSets.client.output) {
-		include 'litemod.json'
-		expand props
-	}
-	
-	from(sourceSets.forge.output) {
-		exclude 'mcmod.info'
-	}
-	from(sourceSets.forge.output) {
-		include 'mcmod.info'
-		expand props
-	}
-	
-	classifier 'universal'
-	extension 'jar'
+
+  from sourceSets.common.output
+
+  from(sourceSets.bukkit.output) {
+    exclude 'plugin.yml'
+  }
+  from(sourceSets.bukkit.output) {
+    include 'plugin.yml'
+    expand props
+  }
+
+  from sourceSets.sponge.output
+
+  from(sourceSets.client.output) {
+    exclude 'litemod.json'
+  }
+  from(sourceSets.client.output) {
+    include 'litemod.json'
+    expand props
+  }
+
+  from(sourceSets.forge.output) {
+    exclude 'mcmod.info'
+  }
+  from(sourceSets.forge.output) {
+    include 'mcmod.info'
+    expand props
+  }
+
+  classifier 'universal'
+  extension 'jar'
 }
