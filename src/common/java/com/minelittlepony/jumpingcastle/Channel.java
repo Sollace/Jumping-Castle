@@ -3,6 +3,9 @@ package com.minelittlepony.jumpingcastle;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.minelittlepony.jumpingcastle.api.IChannel;
 import com.minelittlepony.jumpingcastle.api.IMessage;
 import com.minelittlepony.jumpingcastle.api.IMessageHandler;
@@ -11,6 +14,8 @@ import com.minelittlepony.jumpingcastle.payload.DeserializedPayload;
 import com.minelittlepony.jumpingcastle.payload.IBinaryPayload;
 
 class Channel implements IChannel {
+
+    private static final Logger LOGGER = LogManager.getLogger("JUMPING_CHANNEL");
 
     private final String name;
 
@@ -29,7 +34,7 @@ class Channel implements IChannel {
     @Override
     public IChannel send(IMessage message, Target target) {
         JumpingCastleImpl.instance().getBus().sendToServer(name, IMessage.identifier(message), message, target);
-        return null;
+        return this;
     }
 
     public void onPayload(DeserializedPayload payload) {
@@ -37,6 +42,8 @@ class Channel implements IChannel {
 
         if (entry != null) {
             entry.onPayload(payload.payload);
+        } else {
+            LOGGER.warn("Packet on channel \"%s\" with unknown handler ignored.", name);
         }
     }
 
@@ -51,7 +58,9 @@ class Channel implements IChannel {
         }
 
         private void onPayload(IBinaryPayload payload) {
-            handler.onPayload(payload.readBinary(handleType), Channel.this);
+            Exceptions.logged(() -> {
+                handler.onPayload(payload.readBinary(handleType), Channel.this);
+            }, LOGGER);
         }
     }
 }

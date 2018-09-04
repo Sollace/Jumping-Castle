@@ -1,9 +1,13 @@
 package com.minelittlepony.jumpingcastle;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.minelittlepony.jumpingcastle.api.IChannel;
 import com.minelittlepony.jumpingcastle.dsm.MsgHello;
@@ -13,6 +17,8 @@ import com.minelittlepony.jumpingcastle.payload.IBinaryPayload;
 public final class JumpingServer {
 
     private static final JumpingServer INSTANCE = new JumpingServer();
+
+    private static final Logger LOGGER = LogManager.getLogger("JUMPING_SERVER");
 
     public static JumpingServer instance() {
         return INSTANCE;
@@ -54,6 +60,8 @@ public final class JumpingServer {
         Entry(MsgHello message) {
             playerId = message.playerId;
             subscriptions = message.channels;
+
+            LOGGER.info("Player " + playerId + " subscribed for channels " + Arrays.toString(subscriptions.toArray()));
         }
     }
 }

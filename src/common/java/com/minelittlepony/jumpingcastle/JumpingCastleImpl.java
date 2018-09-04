@@ -15,7 +15,7 @@ import com.minelittlepony.jumpingcastle.payload.DeserializedPayload;
 
 public final class JumpingCastleImpl implements JumpingCastle {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger("JUMPING_CLIENT");
 
     private static final JumpingCastleImpl INSTANCE = new JumpingCastleImpl();
 
@@ -66,6 +66,8 @@ public final class JumpingCastleImpl implements JumpingCastle {
         }
         if (channels.containsKey(payload.channel)) {
             channels.get(payload.channel).onPayload(payload);
+        } else {
+            LOGGER.warn("Packet for unknown channel \"%s\" was ignored", payload.channel);
         }
     }
 
