@@ -89,7 +89,7 @@ public class LiteModJumpingCastle implements LiteMod, JoinGameListener, PluginCh
                 .writeString(channel)
                 .writeLong(id)
                 .writeByte((byte)target.ordinal())
-                .writeBinary(message).buff(), ChannelPolicy.DISPATCH);
+                .writeBinary(message).buff(), ChannelPolicy.DISPATCH_ALWAYS);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class LiteModJumpingCastle implements LiteMod, JoinGameListener, PluginCh
         EntityPlayerMP player = Minecraft.getMinecraft().getIntegratedServer().getPlayerList().getPlayerByUUID(playerId);
 
         if (player != null) {
-            ServerPluginChannels.sendMessage(player, JumpingCastleImpl.CHANNEL, forwarded.buff(), ChannelPolicy.DISPATCH);
+            ServerPluginChannels.sendMessage(player, JumpingCastleImpl.CHANNEL, forwarded.buff(), ChannelPolicy.DISPATCH_ALWAYS);
         }
     }
 
