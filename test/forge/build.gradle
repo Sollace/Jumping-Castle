@@ -1,0 +1,53 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            name 'forge'
+            url 'http://files.minecraftforge.net/maven/'
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+        maven {
+            name = 'sponge'
+            url = 'http://repo.spongepowered.org/maven'
+        }
+    }
+    dependencies {
+				def props = new Properties()
+				file("..\\..\\gradle.properties").withInputStream { props.load(it) }
+		
+        classpath 'net.minecraftforge.gradle:ForgeGradle:' + props.getProperty('forgeGradleVersion')
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+def props = new Properties()
+file("..\\..\\gradle.properties").withInputStream { props.load(it) }
+
+version = 0
+group = "jc-test"
+description = "jc-test"
+
+minecraft {
+    version = "1.12.2-14.23.2.2654"
+    mappings = props.getProperty('mcMappings')
+    makeObfSourceJar = false
+    runDir = "..\\..\\run"
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+sourceSets {
+	main {
+		java {
+			srcDirs "..\\..\\src/common/java", "..\\..\\src/forge/java"
+		}
+		resources {
+			srcDirs "..\\..\\src/forge/resources"
+		}
+	}
+}
