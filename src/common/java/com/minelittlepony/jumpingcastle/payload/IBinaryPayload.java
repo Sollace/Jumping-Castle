@@ -5,7 +5,6 @@ import java.util.UUID;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.minelittlepony.jumpingcastle.api.IMessage;
-import com.mojang.util.UUIDTypeAdapter;
 
 import io.netty.buffer.ByteBuf;
 
