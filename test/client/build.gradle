@@ -16,29 +16,28 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:' + project.forgeGradleVersion
-        classpath 'org.spongepowered:mixingradle:' + project.mixinGradleVersion
+				def props = new Properties()
+				file("..\\..\\gradle.properties").withInputStream { props.load(it) }
+		
+        classpath 'net.minecraftforge.gradle:ForgeGradle:' + props.getProperty('forgeGradleVersion')
+        classpath 'org.spongepowered:mixingradle:' + props.getProperty('mixinGradleVersion')
     }
 }
 apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 
-def ver = "${project.mcVersion}.${project.buildVersion}-${project.buildType}"
+def props = new Properties()
+file("..\\..\\gradle.properties").withInputStream { props.load(it) }
 
-version = ver
-group = project.group
-description = project.name
+version = 0
+group = "jc-test"
+description = "jc-test"
 
 minecraft {
-    version = project.mcVersion
-    mappings = project.mcMappings
+    version = props.getProperty('mcVersion')
+    mappings = props.getProperty('mcMappings')
     makeObfSourceJar = false
-    runDir = 'run'
-    replace '@MODID@', project.modid
-    replace '@NAME@', project.name
-    replace '@AUTHOR@', project.author
-    replace '@VERSION@', ver
-    replace '@DESCRIPTION@', project.description
+    runDir = "..\\..\\run"
 }
 
 mixin {
@@ -51,31 +50,10 @@ targetCompatibility = 1.8
 sourceSets {
 	main {
 		java {
-			srcDirs "../src/common/java", "../src/client/java"
+			srcDirs "..\\..\\src/common/java", "..\\..\\src/client/java"
 		}
 		resources {
-			srcDirs "../src/client/resources"
+			srcDirs "..\\..\\src/client/resources"
 		}
 	}
-}
-
-jar {
-  def props = [
-		modid: project.modid,
-		name: project.name,
-		description: project.description,
-			version: ver,
-			revision: project.buildRevision,
-			mcversion: project.mcVersion,
-			author: project.author
-	]
-	inputs.properties props
-		
-  from(sourceSets.main.output) {
-    exclude 'litemod.json'
-  }
-  from(sourceSets.main.output) {
-    include 'litemod.json'
-    expand props
-  }
 }
