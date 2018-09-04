@@ -23,7 +23,6 @@ import com.minelittlepony.jumpingcastle.payload.DeserializedPayload;
 import com.minelittlepony.jumpingcastle.payload.IBinaryPayload;
 
 import io.netty.buffer.Unpooled;
-import net.minecraft.network.PacketBuffer;
 
 @Plugin(
     id = "@MODID@",
@@ -67,11 +66,11 @@ public class JumpingCastlePlugin implements IMessageBus {
 
     @Override
     public void sendToServer(String channel, long id, IMessage message, Target target) {
-        this.channel.sendToServer(new PayloadData(IBinaryPayload.of(new PacketBuffer(Unpooled.buffer()))
+        this.channel.sendToServer(new PayloadData(IBinaryPayload.of(Unpooled.buffer())
                 .writeString(channel)
                 .writeLong(id)
                 .writeByte((byte)target.ordinal())
-                .writeBinary(message).buff()));
+                .writeBinary(message)));
     }
 
     @Override
