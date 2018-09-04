@@ -5,6 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import net.minecraftforge.fml.relauncher.Side;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Mod {
@@ -43,4 +45,11 @@ public @interface Mod {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     @interface EventHandler{}
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    @interface EventBusSubscriber {
+        Side[] value() default { Side.CLIENT, Side.SERVER };
+        String modid() default "";
+    }
 }

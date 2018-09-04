@@ -18,6 +18,7 @@ import net.minecraft.network.PacketBuffer;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -35,11 +36,18 @@ import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
     name = "@NAME@",
     version ="1.12.2"
 )
+@EventBusSubscriber
 public class ForgeModJumpingCastle implements IMessageBus {
+
+    private static ForgeModJumpingCastle instance;
 
     private FMLEventChannel bus;
 
     private boolean running;
+
+    public ForgeModJumpingCastle() {
+        instance = this;
+    }
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -72,16 +80,16 @@ public class ForgeModJumpingCastle implements IMessageBus {
         }
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerLoggedInEvent event) {
-        if (running) {
+    @SubscribeEvent
+    public static void onPlayerJoin(PlayerLoggedInEvent event) {
+        if (instance.running) {
             JumpingCastleImpl.instance().sayHello(event.player.getGameProfile().getId());
         }
     }
 
-    @EventHandler
-    public void onPlayerLeave(PlayerLoggedOutEvent event) {
-        if (running) {
+    @SubscribeEvent
+    public static void onPlayerLeave(PlayerLoggedOutEvent event) {
+        if (instance.running) {
             JumpingServer.instance().onPlayerLeave(event.player.getGameProfile().getId());
         }
     }
