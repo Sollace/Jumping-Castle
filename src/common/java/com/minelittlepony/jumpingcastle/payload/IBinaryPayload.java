@@ -53,23 +53,5 @@ public interface IBinaryPayload {
         return writeString(gson.toJson(message));
     }
 
-    default public int readInt() {
-        int i = 0;
-        int j = 0;
-
-        while (true) {
-            byte b0 = readByte();
-            i |= (b0 & 127) << j++ * 7;
-
-            if (j > 5) {
-                throw new RuntimeException("VarInt too big");
-            }
-
-            if ((b0 & 128) != 128) {
-                break;
-            }
-        }
-
-        return i;
-    }
+    int readInt();
 }

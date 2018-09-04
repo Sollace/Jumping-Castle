@@ -19,6 +19,11 @@ public interface ByteBufBinaryPayload extends IBinaryPayload {
     }
 
     @Override
+    default int readInt() {
+        return buff().readInt();
+    }
+
+    @Override
     default byte readByte() {
         return buff().readByte();
     }
@@ -64,7 +69,7 @@ public interface ByteBufBinaryPayload extends IBinaryPayload {
 
     @Override
     default IBinaryPayload writeString(String s) {
-        buff().writeInt(s.getBytes().length);
+        buff().writeInt(s.getBytes(StandardCharsets.UTF_8).length);
         buff().writeCharSequence(s, StandardCharsets.UTF_8);
         return this;
     }

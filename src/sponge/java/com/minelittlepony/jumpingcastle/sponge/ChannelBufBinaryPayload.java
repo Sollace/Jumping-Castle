@@ -7,6 +7,12 @@ import com.minelittlepony.jumpingcastle.payload.IBinaryPayload;
 public interface ChannelBufBinaryPayload extends IBinaryPayload {
 
     static IBinaryPayload of(ChannelBuf buff) {
+        IBinaryPayload payload = IBinaryPayload.of(buff);
+
+        if (payload != null) {
+            return payload;
+        }
+
         return (ChannelBufBinaryPayload)(() -> buff);
     }
 
@@ -66,5 +72,10 @@ public interface ChannelBufBinaryPayload extends IBinaryPayload {
     default IBinaryPayload writeBytes(byte[] bytes) {
         buff().writeBytes(bytes);
         return this;
+    }
+
+    @Override
+    default int readInt() {
+        return buff().readInteger();
     }
 }
