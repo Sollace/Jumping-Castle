@@ -22,6 +22,12 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:' + props.getProperty('forgeGradleVersion')
     }
 }
+
+plugins {
+	id 'java'
+	id 'org.spongepowered.plugin' version '0.9.0'
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 def props = new Properties()
@@ -32,18 +38,14 @@ group = "jc-test"
 description = "jc-test"
 
 minecraft {
-    version = "1.12.2"
+    version = "1.12.2-14.23.2.2654"
     mappings = props.getProperty('mcMappings')
     makeObfSourceJar = false
     runDir = "..\\..\\run"
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-dependencies {
-    compile 'org.spongepowered:spongeapi:7.0.0'
-}
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 sourceSets {
 	main {
@@ -54,4 +56,8 @@ sourceSets {
 			
 		}
 	}
+}
+
+dependencies {
+	compile 'org.spongepowered:spongeapi:7.0.0'
 }
