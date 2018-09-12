@@ -33,6 +33,12 @@ class Channel implements IChannel {
     }
 
     @Override
+    public <T extends IMessage & IMessageHandler<T>> IChannel consume(Class<T> messageType) {
+        return consume(messageType, null);
+    }
+
+
+    @Override
     public IChannel send(IMessage message, Target target) {
         JumpingCastleImpl.instance().getBus().sendToServer(name, IMessage.identifier(message), message, target);
         return this;
@@ -61,18 +67,25 @@ class Channel implements IChannel {
     }
 
     private class Entry<T extends IMessage> {
-        final IMessageHandler<T> handler;
+        private final IMessageHandler<T> handler;
 
-        final Class<T> handleType;
+        private final Class<T> handleType;
 
         private Entry(Class<T> handleType, IMessageHandler<T> handler) {
             this.handleType = handleType;
             this.handler = handler;
         }
 
+        @SuppressWarnings("unchecked")
         private void onPayload(IBinaryPayload payload) {
             Exceptions.logged(() -> {
-                handler.onPayload(payload.readBinary(handleType), Channel.this);
+                T message = payload.readBinary(handleType);
+
+                if (message instanceof IMessageHandler) {
+                    ((IMessageHandler<T>) message).onPayload(message, Channel.this);
+                } else {
+                    handler.onPayload(message, Channel.this);
+                }
             }, LOGGER);
         }
     }
