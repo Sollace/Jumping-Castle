@@ -12,10 +12,11 @@ import com.minelittlepony.jumpingcastle.payload.DeserializedPayload;
 import com.minelittlepony.jumpingcastle.payload.IBinaryPayload;
 
 import io.netty.buffer.Unpooled;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
-
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -23,7 +24,6 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.network.FMLEventChannel;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
@@ -66,7 +66,7 @@ public class ForgeModJumpingCastle implements IMessageBus {
 
     @SubscribeEvent
     public void onServerPacket(ServerCustomPacketEvent event) throws IOException {
-        if (running && JumpingCastleImpl.CHANNEL.equalsIgnoreCase(event.getPacket().channel())) {
+        if (instance.running && JumpingCastleImpl.CHANNEL.equalsIgnoreCase(event.getPacket().channel())) {
             NetHandlerPlayServer net = (NetHandlerPlayServer)event.getHandler();
 
             JumpingServer.instance().onPayload(net.player.getGameProfile().getId(), new DeserializedPayload(IBinaryPayload.of(event.getPacket().payload())));
@@ -75,15 +75,15 @@ public class ForgeModJumpingCastle implements IMessageBus {
 
     @SubscribeEvent
     public void onClientPacket(ClientCustomPacketEvent event) throws IOException {
-        if (running && JumpingCastleImpl.CHANNEL.equalsIgnoreCase(event.getPacket().channel())) {
+        if (instance.running && JumpingCastleImpl.CHANNEL.equalsIgnoreCase(event.getPacket().channel())) {
             JumpingCastleImpl.instance().onPayload(new DeserializedPayload(IBinaryPayload.of(event.getPacket().payload())));
         }
     }
 
     @SubscribeEvent
-    public static void onPlayerJoin(PlayerLoggedInEvent event) {
-        if (instance.running) {
-            JumpingCastleImpl.instance().sayHello(event.player.getGameProfile().getId());
+    public static void onPlayerJoin(EntityJoinWorldEvent event) {
+        if (instance.running && event.getEntity() instanceof EntityPlayer) {
+            JumpingCastleImpl.instance().sayHello(((EntityPlayer)event.getEntity()).getGameProfile().getId());
         }
     }
 
