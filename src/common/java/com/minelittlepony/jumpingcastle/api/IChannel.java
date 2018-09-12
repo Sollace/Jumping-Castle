@@ -1,5 +1,7 @@
 package com.minelittlepony.jumpingcastle.api;
 
+import java.util.UUID;
+
 /**
  * A channel for sending and recieving messages.
  */
@@ -28,4 +30,19 @@ public interface IChannel {
      * @param target  Recipients that must handle this message (clients, server, or both)
      */
     IChannel send(IMessage message, Target target);
+
+    /**
+     * Sends a message back. Use this if you're a server.
+     *
+     * @param message The message to send.
+     * @param recipient  Recipient that must handle this message
+     */
+    IChannel respond(IMessage message, UUID recipient);
+
+    /**
+     * Sends a message back to all clients. Use this if you're a server.
+     *
+     * @param message The message to send.
+     */
+    IChannel broadcast(IMessage message);
 }

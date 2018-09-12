@@ -114,4 +114,20 @@ public class ForgeModJumpingCastle implements IMessageBus {
 
         bus.sendTo(new FMLProxyPacket(forwarded.buff(), JumpingCastleImpl.CHANNEL), player);
     }
+
+    @Override
+    public void sendToClient(String channel, long id, IMessage message, UUID playerId) {
+        EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(playerId);
+
+        if (player == null) {
+            return;
+        }
+
+        bus.sendTo(new FMLProxyPacket(IBinaryPayload.of(new PacketBuffer(Unpooled.buffer()))
+                .writeByte(JumpingCastleImpl.PROTOCOL)
+                .writeString(channel)
+                .writeLong(id)
+                .writeByte((byte)Target.CLIENTS.ordinal())
+                .writeBinary(message).buff(), JumpingCastleImpl.CHANNEL), player);
+    }
 }

@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.minelittlepony.jumpingcastle.api.IChannel;
+import com.minelittlepony.jumpingcastle.api.IMessage;
 import com.minelittlepony.jumpingcastle.dsm.MsgHello;
 import com.minelittlepony.jumpingcastle.payload.DeserializedPayload;
 import com.minelittlepony.jumpingcastle.payload.IBinaryPayload;
@@ -37,6 +38,7 @@ public final class JumpingServer {
         if (payload.target.isServers()) {
             JumpingCastleImpl.instance().onPayload(payload);
         }
+
         if (payload.target.isClients()) {
             IBinaryPayload forwarded = payload.payload.reverse();
             IMessageBus bus = JumpingCastleImpl.instance().getBus();
@@ -45,6 +47,14 @@ public final class JumpingServer {
                 .filter(entry -> entry.subscriptions.contains(payload.channel))
                 .forEach(entry -> bus.sendToClient(entry.playerId, forwarded));
         }
+    }
+
+    void broadcast(String channel, long id, IMessage message) {
+        IMessageBus bus = JumpingCastleImpl.instance().getBus();
+
+        playerChannelsMapping.values().stream()
+            .filter(entry -> entry.subscriptions.contains(channel))
+            .forEach(entry -> bus.sendToClient(channel, id, message, entry.playerId));
     }
 
     public void onPlayerLeave(UUID playerId) {

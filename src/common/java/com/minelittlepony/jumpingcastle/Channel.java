@@ -2,6 +2,7 @@ package com.minelittlepony.jumpingcastle;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +35,18 @@ class Channel implements IChannel {
     @Override
     public IChannel send(IMessage message, Target target) {
         JumpingCastleImpl.instance().getBus().sendToServer(name, IMessage.identifier(message), message, target);
+        return this;
+    }
+
+    @Override
+    public IChannel respond(IMessage message, UUID recipient) {
+        JumpingCastleImpl.instance().getBus().sendToClient(name, IMessage.identifier(message), message, recipient);
+        return this;
+    }
+
+    @Override
+    public IChannel broadcast(IMessage message) {
+        JumpingServer.instance().broadcast(name, IMessage.identifier(message), message);
         return this;
     }
 

@@ -66,4 +66,22 @@ public class JumpingCastlePlugin extends JavaPlugin implements Listener, IMessag
 
         player.sendPluginMessage(this, JumpingCastleImpl.CHANNEL, Arrays.copyOf(buffer.array(), buffer.writerIndex()));
     }
+
+    @Override
+    public void sendToClient(String channel, long id, IMessage message, UUID playerId) {
+        Player player = Bukkit.getPlayer(playerId);
+
+        if (player == null) {
+            return;
+        }
+
+        ByteBuf buffer = ((ByteBuf)IBinaryPayload.of(Unpooled.buffer())
+                .writeByte(JumpingCastleImpl.PROTOCOL)
+                .writeString(channel)
+                .writeLong(id)
+                .writeByte((byte)Target.CLIENTS.ordinal())
+                .writeBinary(message).buff());
+
+        player.sendPluginMessage(this, JumpingCastleImpl.CHANNEL, Arrays.copyOf(buffer.array(), buffer.writerIndex()));
+    }
 }

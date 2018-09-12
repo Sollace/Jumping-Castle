@@ -80,6 +80,18 @@ public class JumpingCastlePlugin implements IMessageBus {
         });
     }
 
+
+    @Override
+    public void sendToClient(String channel, long id, IMessage message, UUID playerId) {
+        Sponge.getServer().getPlayer(playerId).ifPresent(player -> {
+            this.channel.sendTo(player, new PayloadData(IBinaryPayload.of(Unpooled.buffer())
+                    .writeString(channel)
+                    .writeLong(id)
+                    .writeByte((byte)Target.CLIENTS.ordinal())
+                    .writeBinary(message)));
+        });
+    }
+
     class PayloadData implements Message {
 
         private IBinaryPayload payload;
