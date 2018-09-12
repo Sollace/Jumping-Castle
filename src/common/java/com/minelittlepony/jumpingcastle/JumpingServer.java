@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.minelittlepony.jumpingcastle.api.IChannel;
 import com.minelittlepony.jumpingcastle.api.IMessage;
+import com.minelittlepony.jumpingcastle.dsm.MsgAck;
 import com.minelittlepony.jumpingcastle.dsm.MsgHello;
 import com.minelittlepony.jumpingcastle.payload.DeserializedPayload;
 import com.minelittlepony.jumpingcastle.payload.IBinaryPayload;
@@ -32,6 +33,8 @@ public final class JumpingServer {
 
     public void onHello(MsgHello message, IChannel channel) {
         playerChannelsMapping.put(message.playerId, new Entry(message));
+
+        channel.respond(new MsgAck(), message.playerId);
     }
 
     public void onPayload(UUID senderId, DeserializedPayload payload) {

@@ -19,7 +19,7 @@ public interface JumpingCastle {
      *
      * @return An instance of IChannel.
      */
-    static IChannel listen(String channelName) {
-        return JumpingCastleImpl.instance().listen(channelName);
+    static IChannel listen(String channelName, IClient clientHandler) {
+        return JumpingCastleImpl.instance().listen(channelName, clientHandler);
     }
 }
