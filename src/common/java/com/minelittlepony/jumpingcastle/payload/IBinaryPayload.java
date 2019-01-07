@@ -12,7 +12,7 @@ public interface IBinaryPayload {
 
     Gson gson = new GsonBuilder()
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
-            .excludeFieldsWithoutExposeAnnotation()
+     //       .excludeFieldsWithoutExposeAnnotation()
             .create();
 
     static IBinaryPayload of(Object buffer) {

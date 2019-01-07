@@ -27,14 +27,14 @@ class Channel implements IChannel {
     }
 
     @Override
-    public <T extends IMessage> IChannel consume(Class<T> messageType, IMessageHandler<T> handler) {
+    public <T extends IMessage> IChannel listenFor(Class<T> messageType, IMessageHandler<T> handler) {
         handlers.put(IMessage.identifier(messageType), new Entry<T>(messageType, handler));
         return this;
     }
 
     @Override
-    public <T extends IMessage & IMessageHandler<T>> IChannel consume(Class<T> messageType) {
-        return consume(messageType, null);
+    public <T extends IMessage & IMessageHandler<T>> IChannel listenFor(Class<T> messageType) {
+        return listenFor(messageType, null);
     }
 
 

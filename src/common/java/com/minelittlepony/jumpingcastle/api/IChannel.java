@@ -12,14 +12,14 @@ public interface IChannel {
      * @param messageType   The message type being recieved.
      * @param handler       A handler instance to handle the message.
      */
-    <T extends IMessage> IChannel consume(Class<T> messageType, IMessageHandler<T> handler);
+    <T extends IMessage> IChannel listenFor(Class<T> messageType, IMessageHandler<T> handler);
 
     /**
      * Registers a handler for a specific message type transmitted over this channel.
      *
      * @param messageType   The message type being recieved.
      */
-    <T extends IMessage & IMessageHandler<T>> IChannel consume(Class<T> messageType);
+    <T extends IMessage & IMessageHandler<T>> IChannel listenFor(Class<T> messageType);
 
     /**
      * Sends a message over this channel. By default targets all other clients listening on this channel.

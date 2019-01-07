@@ -39,9 +39,9 @@ public final class JumpingCastleImpl implements JumpingCastle {
     private IChannel helloChannel;
 
     private JumpingCastleImpl() {
-        helloChannel = listen(CHANNEL, null)
-                .consume(MsgHello.class, JumpingServer.instance()::onHello)
-                .consume(MsgAck.class, this::connectionEstalished);
+        helloChannel = subscribeTo(CHANNEL, null)
+                .listenFor(MsgHello.class, JumpingServer.instance()::onHello)
+                .listenFor(MsgAck.class, this::connectionEstalished);
     }
 
     private void connectionEstalished(MsgAck msg, IChannel channel) {
@@ -70,7 +70,7 @@ public final class JumpingCastleImpl implements JumpingCastle {
         return bus;
     }
 
-    public IChannel listen(String channelName, IClient clientHandler) {
+    public IChannel subscribeTo(String channelName, IClient clientHandler) {
         if (clientHandler != null && !clients.contains(clientHandler)) {
             clients.add(clientHandler);
         }
