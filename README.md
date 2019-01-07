@@ -31,7 +31,7 @@ Now how do you _handle_ these messages?
 In your mod's initialize method you just have to register your message with JumpingCastle:
 
 ```
-JumpingCastle.listen("MyChannelName").consume(MsgHello.class, (msg, channel) -> {
+JumpingCastle.listen("MyChannelName").listenFor(MsgHello.class, (msg, channel) -> {
 		// ...
 		// Handle the incomming message
 		// ...
