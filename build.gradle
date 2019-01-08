@@ -90,31 +90,31 @@ sourceSets {
   }
   forge {
     dependencies {
-    //  compileOnly 'net.minecraftforge:forge:1.12.2-14.23.2.2654'
+     //  compileOnly 'net.minecraftforge:forge:1.12.2-14.23.2.2654'
     }
     compileClasspath += main.compileClasspath
     compileClasspath += common.output
   }
-    client {
-      compileClasspath += main.compileClasspath
+  client {
+    compileClasspath += main.compileClasspath
     compileClasspath += common.output
-    }
-    main {
+  }
+  main {
 
-    }
+  }
 }
 
 jar {
   def props = [
-      modid: project.modid,
-      name: project.name,
-      description: project.description,
-        version: ver,
-        revision: project.buildRevision,
-        mcversion: project.mcVersion,
-        author: project.author
-    ]
-    inputs.properties props
+    modid: project.modid,
+    name: project.name,
+    description: project.description,
+      version: ver,
+      revision: project.buildRevision,
+      mcversion: project.mcVersion,
+      author: project.author
+  ]
+  inputs.properties props
 
   from sourceSets.common.output
 
@@ -144,6 +144,10 @@ jar {
     expand props
   }
 
+  manifest {
+    attributes ModType: 'FML, LiteLoader'
+  }
+	
   classifier 'universal'
   extension 'jar'
 }
