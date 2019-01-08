@@ -1,7 +1,9 @@
 package net.minecraftforge.fml.common.network;
 
-public interface NetworkRegistry {
-    static NetworkRegistry INSTANCE = null;
+public abstract class NetworkRegistry {
+    public static NetworkRegistry INSTANCE = null;
 
-    FMLEventChannel newEventDrivenChannel(String channelName);
+    public FMLEventChannel newEventDrivenChannel(String channelName) {
+        return null;
+    }
 }

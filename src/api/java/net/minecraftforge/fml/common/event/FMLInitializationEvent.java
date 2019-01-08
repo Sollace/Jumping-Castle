@@ -1,3 +1,3 @@
 package net.minecraftforge.fml.common.event;
 
-public interface FMLInitializationEvent { }
+public abstract class FMLInitializationEvent { }

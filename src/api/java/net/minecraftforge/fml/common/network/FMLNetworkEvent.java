@@ -5,19 +5,19 @@ import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.INetHandlerPlayServer;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 
-public interface FMLNetworkEvent<T> {
+public abstract class FMLNetworkEvent<T extends INetHandler> {
 
-    T getHandler();
+    public T getHandler() { return null; }
 
-    interface CustomPacketEvent<S extends INetHandler> extends FMLNetworkEvent<S> {
-        FMLProxyPacket getPacket();
+    public static abstract class CustomPacketEvent<S extends INetHandler> extends FMLNetworkEvent<S> {
+        public FMLProxyPacket getPacket() { return null; }
     }
 
-    interface ServerCustomPacketEvent extends CustomPacketEvent<INetHandlerPlayServer> {
+    public static abstract class ServerCustomPacketEvent extends CustomPacketEvent<INetHandlerPlayServer> {
 
     }
 
-    interface ClientCustomPacketEvent extends CustomPacketEvent<INetHandlerPlayClient> {
+    public static abstract class ClientCustomPacketEvent extends CustomPacketEvent<INetHandlerPlayClient> {
 
     }
 }

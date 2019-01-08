@@ -1,5 +1,6 @@
 package net.minecraftforge.fml.common.network.internal;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.PacketBuffer;
 
 public final class FMLProxyPacket {
@@ -8,5 +9,5 @@ public final class FMLProxyPacket {
 
     public String channel() { return null; }
 
-    public PacketBuffer payload() { return null; }
+    public ByteBuf payload() { return null; }
 }
