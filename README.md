@@ -2,10 +2,6 @@
 
 ## Light and bouncy!
 
-Jumping castle is a packet transport layer for Minecraft clients and servers build on top of various other existing frameworks. It provides a consistent interface for mods to interact with wether using Forge, LiteLoader, Bukkit or Spigot, or even Sponge.
-
-As long as the server is running any of the above with JumpingCastle, your mod will be able to transmit messages to itself either on the server or other clients.
-
 SolNet (Otherwise known as Jumping Castle because, well, it jumps between the client and server) is a network abstraction layer  for Minecraft clients and servers built overtop of any existing frameworks pre-installed on the server. It provides a minimal and consistent interface across all supported platforms that makes it easier for modders to reuse the same networking code across both clients and servers of different implementations, or to communicate with their own mod on other clients connected to the same server without necessarily having to install your mod on the server.
 
 ## Messages
