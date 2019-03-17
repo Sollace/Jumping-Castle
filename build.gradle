@@ -32,7 +32,7 @@ description = project.name
 minecraft {
     version = project.mcVersion
     mappings = project.mcMappings
-    makeObfSourceJar = false
+   // makeObfSourceJar = false
     runDir = 'run'
     replace '@MODID@', project.modid
     replace '@NAME@', project.name
@@ -104,6 +104,54 @@ sourceSets {
   }
 }
 
+task srgJar(type: Jar) {
+  def props = [
+    modid: project.modid,
+    name: project.name,
+    description: project.description,
+      version: ver,
+      revision: project.buildRevision,
+      mcversion: project.mcVersion,
+      author: project.author
+  ]
+  inputs.properties props
+
+  from sourceSets.common.output
+
+  from(sourceSets.bukkit.output) {
+    exclude 'plugin.yml'
+  }
+  from(sourceSets.bukkit.output) {
+    include 'plugin.yml'
+    expand props
+  }
+
+  from sourceSets.sponge.output
+
+  from(sourceSets.client.output) {
+    exclude 'litemod.json'
+  }
+  from(sourceSets.client.output) {
+    include 'litemod.json'
+    expand props
+  }
+
+  from(sourceSets.forge.output) {
+    exclude 'mcmod.info'
+  }
+  from(sourceSets.forge.output) {
+    include 'mcmod.info'
+    expand props
+  }
+
+  manifest {
+    attributes ModType: 'FML, LiteLoader'
+  }
+
+  classifier 'srg'
+  extension 'jar'
+}
+
 jar {
   def props = [
     modid: project.modid,
@@ -147,7 +195,13 @@ jar {
   manifest {
     attributes ModType: 'FML, LiteLoader'
   }
-	
+
   classifier 'universal'
   extension 'jar'
+}
+
+reobf {
+    srgJar {
+        mappingType = 'SEARGE'
+    }
 }
