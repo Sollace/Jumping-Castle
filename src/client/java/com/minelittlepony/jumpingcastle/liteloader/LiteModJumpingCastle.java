@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Lists;
 import com.minelittlepony.jumpingcastle.DeserializedPayload;
 import com.minelittlepony.jumpingcastle.JumpingClientImpl;
@@ -113,6 +115,12 @@ public class LiteModJumpingCastle implements LiteMod, JoinGameListener, PluginCh
                     .writeByte((byte)Target.CLIENTS.ordinal())
                     .writeBinary(message).buff(), ChannelPolicy.DISPATCH_ALWAYS);
         }
+    }
+
+    @Nullable
+    @Override
+    public Object getMinecraftServer() {
+        return Minecraft.getMinecraft().getIntegratedServer();
     }
 
     @Override

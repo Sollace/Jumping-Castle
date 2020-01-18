@@ -2,6 +2,8 @@ package com.minelittlepony.jumpingcastle.api;
 
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import com.minelittlepony.jumpingcastle.JumpingServerImpl;
 import com.minelittlepony.jumpingcastle.api.payload.BinaryPayload;
 
@@ -14,6 +16,9 @@ public interface Bus {
     void sendToClient(String channel, long id, Message message, UUID playerId);
 
     void sendToClient(UUID playerId, BinaryPayload forwarded);
+
+    @Nullable
+    Object getMinecraftServer();
 
     default Server getServer() {
         return JumpingServerImpl.INSTANCE;

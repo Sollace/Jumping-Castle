@@ -22,6 +22,11 @@ public interface Channel {
     <T extends Message & Handler<T>> Channel listenFor(Class<T> messageType);
 
     /**
+     * Gets the minecraft server
+     */
+    <T> T getServer();
+
+    /**
      * Sends a message over this channel. By default targets all other clients listening on this channel.
      *
      * @param message The message to send.

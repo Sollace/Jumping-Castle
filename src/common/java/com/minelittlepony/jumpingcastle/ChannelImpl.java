@@ -36,6 +36,11 @@ class ChannelImpl implements Channel {
         return listenFor(messageType, null);
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getServer() {
+        return (T)JumpingClientImpl.instance().getBus().getMinecraftServer();
+    }
 
     @Override
     public Channel send(Message message, Target target) {

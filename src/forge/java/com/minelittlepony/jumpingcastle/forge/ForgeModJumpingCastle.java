@@ -130,4 +130,9 @@ public class ForgeModJumpingCastle implements Bus {
                 .writeByte((byte)Target.CLIENTS.ordinal())
                 .writeBinary(message).buff(), JumpingClientImpl.CHANNEL), player);
     }
+
+    @Override
+    public Object getMinecraftServer() {
+        return FMLCommonHandler.instance().getMinecraftServerInstance();
+    }
 }

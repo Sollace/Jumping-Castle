@@ -35,9 +35,17 @@ public class JumpingCastlePlugin implements Bus {
 
     private boolean running;
 
+    private Object mcServer;
+
+    @Override
+    public Object getMinecraftServer() {
+        return mcServer;
+    }
+
     @Listener
     public void onServerStart(GameInitializationEvent event) {
         running = JumpingClientImpl.instance().setBus(this);
+        mcServer = event.getSource();
 
         if (running) {
             channel = Sponge.getChannelRegistrar().createChannel(this, JumpingClientImpl.CHANNEL);

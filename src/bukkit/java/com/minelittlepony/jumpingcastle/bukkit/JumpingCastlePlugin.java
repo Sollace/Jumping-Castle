@@ -41,6 +41,11 @@ public class JumpingCastlePlugin extends JavaPlugin implements Listener, Bus  {
         messenger.registerOutgoingPluginChannel(this, JumpingClientImpl.CHANNEL);
     }
 
+    @Override
+    public Object getMinecraftServer() {
+        return null; // TODO: God dammit, bukkit
+    }
+
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
         if (running) {
