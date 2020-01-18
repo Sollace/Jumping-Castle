@@ -1,6 +1,7 @@
-package com.minelittlepony.jumpingcastle.payload;
+package com.minelittlepony.jumpingcastle;
 
 import com.minelittlepony.jumpingcastle.api.Target;
+import com.minelittlepony.jumpingcastle.api.payload.BinaryPayload;
 
 public class DeserializedPayload {
 
@@ -12,9 +13,9 @@ public class DeserializedPayload {
 
     public final Target target;
 
-    public final IBinaryPayload payload;
+    public final BinaryPayload payload;
 
-    public DeserializedPayload(IBinaryPayload payload) {
+    public DeserializedPayload(BinaryPayload payload) {
         this.payload = payload;
 
         protocol = payload.readByte();
@@ -23,7 +24,7 @@ public class DeserializedPayload {
         target = Target.values()[payload.readByte()];
     }
 
-    public DeserializedPayload(byte proto, IBinaryPayload payload) {
+    public DeserializedPayload(byte proto, BinaryPayload payload) {
         this.payload = payload;
 
         protocol = proto;

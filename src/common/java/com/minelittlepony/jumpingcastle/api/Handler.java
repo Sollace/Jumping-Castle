@@ -6,7 +6,7 @@ package com.minelittlepony.jumpingcastle.api;
  * @param <T> The type of message to handle.
  */
 @FunctionalInterface
-public interface IMessageHandler<T extends IMessage> {
+public interface Handler<T extends Message> {
     /**
      * Called when a new message is received.
      *
@@ -14,5 +14,5 @@ public interface IMessageHandler<T extends IMessage> {
      *
      * @param channel The channel used to deliver the message.
      */
-    void onPayload(T message, IChannel channel);
+    void onPayload(T message, Channel channel);
 }

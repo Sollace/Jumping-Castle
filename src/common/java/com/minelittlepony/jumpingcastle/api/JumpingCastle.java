@@ -1,6 +1,6 @@
 package com.minelittlepony.jumpingcastle.api;
 
-import com.minelittlepony.jumpingcastle.JumpingCastleImpl;
+import com.minelittlepony.jumpingcastle.JumpingClientImpl;
 
 /**
  * Jumping Castle main interface.
@@ -19,7 +19,12 @@ public interface JumpingCastle {
      *
      * @return An instance of IChannel.
      */
-    static IChannel subscribeTo(String channelName, IClient clientHandler) {
-        return JumpingCastleImpl.instance().subscribeTo(channelName, clientHandler);
+    static Channel subscribeTo(String channelName, Client clientHandler) {
+        return JumpingClientImpl.instance().subscribeTo(channelName, clientHandler);
+    }
+
+    @FunctionalInterface
+    public interface Client {
+        void connectionEstablished();
     }
 }

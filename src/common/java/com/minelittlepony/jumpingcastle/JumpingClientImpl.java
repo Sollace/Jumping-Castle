@@ -9,44 +9,43 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.minelittlepony.jumpingcastle.api.IChannel;
-import com.minelittlepony.jumpingcastle.api.IClient;
+import com.minelittlepony.jumpingcastle.api.Channel;
+import com.minelittlepony.jumpingcastle.api.Bus;
 import com.minelittlepony.jumpingcastle.api.JumpingCastle;
 import com.minelittlepony.jumpingcastle.api.Target;
 import com.minelittlepony.jumpingcastle.dsm.MsgAck;
 import com.minelittlepony.jumpingcastle.dsm.MsgHello;
-import com.minelittlepony.jumpingcastle.payload.DeserializedPayload;
 
-public final class JumpingCastleImpl implements JumpingCastle {
+public final class JumpingClientImpl implements JumpingCastle {
 
     private static final Logger LOGGER = LogManager.getLogger("JUMPING_CLIENT");
 
-    private static final JumpingCastleImpl INSTANCE = new JumpingCastleImpl();
+    private static final JumpingClientImpl INSTANCE = new JumpingClientImpl();
 
     public static final String CHANNEL = "JUMPIN";
-    public static final byte PROTOCOL = 0;
+    public static final byte PROTOCOL = 1;
 
-    public static JumpingCastleImpl instance() {
+    public static JumpingClientImpl instance() {
         return INSTANCE;
     }
 
-    private final Map<String, Channel> channels = new HashMap<>();
+    private final Map<String, ChannelImpl> channels = new HashMap<>();
 
-    private final List<IClient> clients = new ArrayList<>();
+    private final List<Client> clients = new ArrayList<>();
 
-    private IMessageBus bus;
+    private Bus bus;
 
-    private IChannel helloChannel;
+    private Channel helloChannel;
 
-    private JumpingCastleImpl() {
+    private JumpingClientImpl() {
         helloChannel = subscribeTo(CHANNEL, null)
-                .listenFor(MsgHello.class, JumpingServer.instance()::onHello)
+                .listenFor(MsgHello.class, JumpingServerImpl.INSTANCE::startTrackingPlayer)
                 .listenFor(MsgAck.class, this::connectionEstalished);
     }
 
-    private void connectionEstalished(MsgAck msg, IChannel channel) {
+    private void connectionEstalished(MsgAck msg, Channel channel) {
         LOGGER.info("Recieved Ack from server with player");
-        clients.forEach(IClient::connectionEstablished);
+        clients.forEach(Client::connectionEstablished);
     }
 
     public void sayHello(UUID playerId) {
@@ -54,7 +53,7 @@ public final class JumpingCastleImpl implements JumpingCastle {
         helloChannel.send(new MsgHello(playerId, channels.keySet()), Target.SERVER);
     }
 
-    public boolean setBus(IMessageBus bus) {
+    public boolean setBus(Bus bus) {
         if (this.bus == null) {
             this.bus = bus;
             return true;
@@ -63,18 +62,18 @@ public final class JumpingCastleImpl implements JumpingCastle {
         return false;
     }
 
-    public IMessageBus getBus() {
+    public Bus getBus() {
         if (bus == null) {
             throw new IllegalStateException("No message bus");
         }
         return bus;
     }
 
-    public IChannel subscribeTo(String channelName, IClient clientHandler) {
+    public Channel subscribeTo(String channelName, Client clientHandler) {
         if (clientHandler != null && !clients.contains(clientHandler)) {
             clients.add(clientHandler);
         }
-        return channels.computeIfAbsent(channelName, Channel::new);
+        return channels.computeIfAbsent(channelName, ChannelImpl::new);
     }
 
     public void onPayload(DeserializedPayload payload) {
@@ -87,5 +86,4 @@ public final class JumpingCastleImpl implements JumpingCastle {
             LOGGER.warn("Packet for unknown channel \"%s\" was ignored", payload.channel);
         }
     }
-
 }

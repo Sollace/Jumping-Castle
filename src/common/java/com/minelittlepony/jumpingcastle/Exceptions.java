@@ -2,8 +2,7 @@ package com.minelittlepony.jumpingcastle;
 
 import org.apache.logging.log4j.Logger;
 
-public class Exceptions {
-
+class Exceptions {
     public static void logged(Runnable action, Logger log) {
         try {
             action.run();

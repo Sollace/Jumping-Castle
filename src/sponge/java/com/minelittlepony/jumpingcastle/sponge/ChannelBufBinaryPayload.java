@@ -2,12 +2,12 @@ package com.minelittlepony.jumpingcastle.sponge;
 
 import org.spongepowered.api.network.ChannelBuf;
 
-import com.minelittlepony.jumpingcastle.payload.IBinaryPayload;
+import com.minelittlepony.jumpingcastle.api.payload.BinaryPayload;
 
-public interface ChannelBufBinaryPayload extends IBinaryPayload {
+public interface ChannelBufBinaryPayload extends BinaryPayload {
 
-    static IBinaryPayload of(ChannelBuf buff) {
-        IBinaryPayload payload = IBinaryPayload.of(buff);
+    static BinaryPayload of(ChannelBuf buff) {
+        BinaryPayload payload = BinaryPayload.of(buff);
 
         if (payload != null) {
             return payload;
@@ -30,7 +30,7 @@ public interface ChannelBufBinaryPayload extends IBinaryPayload {
     }
 
     @Override
-    default IBinaryPayload writeByte(byte b) {
+    default BinaryPayload writeByte(byte b) {
         buff().writeByte(b);
         return this;
     }
@@ -51,25 +51,30 @@ public interface ChannelBufBinaryPayload extends IBinaryPayload {
     }
 
     @Override
-    default IBinaryPayload writeLong(long l) {
+    default BinaryPayload writeLong(long l) {
         buff().writeLong(l);
         return this;
     }
 
     @Override
-    default IBinaryPayload reverse() {
+    default BinaryPayload reverse() {
         buff().setReadIndex(0);
         return this;
     }
 
     @Override
-    default IBinaryPayload writeString(String s) {
+    default BinaryPayload writeString(String s) {
         buff().writeString(s);
         return this;
     }
 
     @Override
-    default IBinaryPayload writeBytes(byte[] bytes) {
+    default byte[] readBytes(int len) {
+        return buff().readByteArray(len);
+    }
+
+    @Override
+    default BinaryPayload writeBytes(byte[] bytes) {
         buff().writeBytes(bytes);
         return this;
     }
@@ -77,5 +82,11 @@ public interface ChannelBufBinaryPayload extends IBinaryPayload {
     @Override
     default int readInt() {
         return buff().readInteger();
+    }
+
+    @Override
+    default BinaryPayload writeInt(int b) {
+        buff().writeInteger(b);
+        return this;
     }
 }

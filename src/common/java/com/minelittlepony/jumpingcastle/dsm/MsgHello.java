@@ -6,10 +6,9 @@ import java.util.UUID;
 
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
-import com.minelittlepony.jumpingcastle.api.IMessage;
+import com.minelittlepony.jumpingcastle.api.Message;
 
-@IMessage.Id(0)
-public class MsgHello implements IMessage {
+public class MsgHello implements Message {
 
     @Expose
     public UUID playerId;

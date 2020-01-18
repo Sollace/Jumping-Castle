@@ -9,42 +9,39 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.minelittlepony.jumpingcastle.api.IChannel;
-import com.minelittlepony.jumpingcastle.api.IMessage;
+import com.minelittlepony.jumpingcastle.api.Bus;
+import com.minelittlepony.jumpingcastle.api.Channel;
+import com.minelittlepony.jumpingcastle.api.Message;
+import com.minelittlepony.jumpingcastle.api.Server;
+import com.minelittlepony.jumpingcastle.api.payload.BinaryPayload;
 import com.minelittlepony.jumpingcastle.dsm.MsgAck;
 import com.minelittlepony.jumpingcastle.dsm.MsgHello;
-import com.minelittlepony.jumpingcastle.payload.DeserializedPayload;
-import com.minelittlepony.jumpingcastle.payload.IBinaryPayload;
 
-public final class JumpingServer {
+public final class JumpingServerImpl implements Server {
 
-    private static final JumpingServer INSTANCE = new JumpingServer();
+    public static final JumpingServerImpl INSTANCE = new JumpingServerImpl();
 
     private static final Logger LOGGER = LogManager.getLogger("JUMPING_SERVER");
 
-    public static JumpingServer instance() {
-        return INSTANCE;
-    }
-
     private final Map<UUID, Entry> playerChannelsMapping = new HashMap<>();
 
-    private JumpingServer() {
-    }
+    private JumpingServerImpl() { }
 
-    public void onHello(MsgHello message, IChannel channel) {
+    void startTrackingPlayer(MsgHello message, Channel channel) {
         playerChannelsMapping.put(message.playerId, new Entry(message));
 
         channel.respond(new MsgAck(), message.playerId);
     }
 
+    @Override
     public void onPayload(UUID senderId, DeserializedPayload payload) {
         if (payload.target.isServers()) {
-            JumpingCastleImpl.instance().onPayload(payload);
+            JumpingClientImpl.instance().onPayload(payload);
         }
 
         if (payload.target.isClients()) {
-            IBinaryPayload forwarded = payload.payload.reverse();
-            IMessageBus bus = JumpingCastleImpl.instance().getBus();
+            BinaryPayload forwarded = payload.payload.reverse();
+            Bus bus = JumpingClientImpl.instance().getBus();
 
             playerChannelsMapping.values().stream()
                 .filter(entry -> entry.subscriptions.contains(payload.channel))
@@ -52,15 +49,16 @@ public final class JumpingServer {
         }
     }
 
-    void broadcast(String channel, long id, IMessage message) {
-        IMessageBus bus = JumpingCastleImpl.instance().getBus();
+    void broadcast(String channel, long id, Message message) {
+        Bus bus = JumpingClientImpl.instance().getBus();
 
         playerChannelsMapping.values().stream()
             .filter(entry -> entry.subscriptions.contains(channel))
             .forEach(entry -> bus.sendToClient(channel, id, message, entry.playerId));
     }
 
-    public void onPlayerLeave(UUID playerId) {
+    @Override
+    public void stopTrackingPlayer(UUID playerId) {
         playerChannelsMapping.remove(playerId);
     }
 

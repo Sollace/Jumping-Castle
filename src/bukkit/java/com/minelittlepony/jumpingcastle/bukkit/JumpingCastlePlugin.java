@@ -11,24 +11,23 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.Messenger;
 
-import com.minelittlepony.jumpingcastle.IMessageBus;
-import com.minelittlepony.jumpingcastle.JumpingCastleImpl;
-import com.minelittlepony.jumpingcastle.JumpingServer;
-import com.minelittlepony.jumpingcastle.api.IMessage;
+import com.minelittlepony.jumpingcastle.DeserializedPayload;
+import com.minelittlepony.jumpingcastle.JumpingClientImpl;
+import com.minelittlepony.jumpingcastle.api.Bus;
+import com.minelittlepony.jumpingcastle.api.Message;
 import com.minelittlepony.jumpingcastle.api.Target;
-import com.minelittlepony.jumpingcastle.payload.DeserializedPayload;
-import com.minelittlepony.jumpingcastle.payload.IBinaryPayload;
+import com.minelittlepony.jumpingcastle.api.payload.BinaryPayload;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-public class JumpingCastlePlugin extends JavaPlugin implements Listener, IMessageBus  {
+public class JumpingCastlePlugin extends JavaPlugin implements Listener, Bus  {
 
     private boolean running;
 
     @Override
     public void onEnable() {
-        running = JumpingCastleImpl.instance().setBus(this);
+        running = JumpingClientImpl.instance().setBus(this);
 
         if (!running) return;
 
@@ -36,52 +35,52 @@ public class JumpingCastlePlugin extends JavaPlugin implements Listener, IMessag
 
         Messenger messenger = Bukkit.getMessenger();
 
-        messenger.registerIncomingPluginChannel(this, JumpingCastleImpl.CHANNEL, (channel, player, bytes) -> {
-            JumpingServer.instance().onPayload(player.getUniqueId(), new DeserializedPayload(IBinaryPayload.of(Unpooled.wrappedBuffer(bytes))));
+        messenger.registerIncomingPluginChannel(this, JumpingClientImpl.CHANNEL, (channel, player, bytes) -> {
+            getServer().onPayload(player.getUniqueId(), new DeserializedPayload(BinaryPayload.of(Unpooled.wrappedBuffer(bytes))));
         });
-        messenger.registerOutgoingPluginChannel(this, JumpingCastleImpl.CHANNEL);
+        messenger.registerOutgoingPluginChannel(this, JumpingClientImpl.CHANNEL);
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
         if (running) {
-            JumpingServer.instance().onPlayerLeave(event.getPlayer().getUniqueId());
+            getServer().stopTrackingPlayer(event.getPlayer().getUniqueId());
         }
     }
 
     @Override
-    public void sendToServer(String channel, long id, IMessage message, Target target) {
+    public void sendToServer(String channel, long id, Message message, Target target) {
 
     }
 
     @Override
-    public void sendToClient(UUID playerId, IBinaryPayload forwarded) {
+    public void sendToClient(UUID playerId, BinaryPayload forwarded) {
         Player player = Bukkit.getPlayer(playerId);
 
         if (player == null) {
             return;
         }
 
-        ByteBuf buffer = ((ByteBuf)forwarded.buff());
+        ByteBuf buffer = forwarded.buff();
 
-        player.sendPluginMessage(this, JumpingCastleImpl.CHANNEL, Arrays.copyOf(buffer.array(), buffer.writerIndex()));
+        player.sendPluginMessage(this, JumpingClientImpl.CHANNEL, Arrays.copyOf(buffer.array(), buffer.writerIndex()));
     }
 
     @Override
-    public void sendToClient(String channel, long id, IMessage message, UUID playerId) {
+    public void sendToClient(String channel, long id, Message message, UUID playerId) {
         Player player = Bukkit.getPlayer(playerId);
 
         if (player == null) {
             return;
         }
 
-        ByteBuf buffer = ((ByteBuf)IBinaryPayload.of(Unpooled.buffer())
-                .writeByte(JumpingCastleImpl.PROTOCOL)
+        ByteBuf buffer = BinaryPayload.create()
+                .writeByte(JumpingClientImpl.PROTOCOL)
                 .writeString(channel)
                 .writeLong(id)
                 .writeByte((byte)Target.CLIENTS.ordinal())
-                .writeBinary(message).buff());
+                .writeBinary(message).buff();
 
-        player.sendPluginMessage(this, JumpingCastleImpl.CHANNEL, Arrays.copyOf(buffer.array(), buffer.writerIndex()));
+        player.sendPluginMessage(this, JumpingClientImpl.CHANNEL, Arrays.copyOf(buffer.array(), buffer.writerIndex()));
     }
 }

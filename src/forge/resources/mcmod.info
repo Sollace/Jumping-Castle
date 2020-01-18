@@ -1,6 +1,6 @@
 [
 	{
-	  "modid": "jumpingcastle",
+	  "modid": "${modid}_forge",
 	  "name": "${name}",
 	  "description": "${description}",
 	  "version": "${version}",

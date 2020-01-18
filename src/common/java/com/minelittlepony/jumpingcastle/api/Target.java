@@ -1,8 +1,8 @@
 package com.minelittlepony.jumpingcastle.api;
 
 /**
- * Targetting method to control who recieves a message when sent.
- * Senders choose whether a message is recieved on other clients, just the server, or both.
+ * Targeting method to control who receives a message when sent.
+ * Senders choose whether a message is received on other clients, just the server, or both.
  */
 public enum Target {
     /**
@@ -28,14 +28,14 @@ public enum Target {
     }
 
     /**
-     * True if messages with this targetting must be procesed by the client.
+     * True if messages with this targeting must be processed by the client.
      */
     public boolean isClients() {
         return clients;
     }
 
     /**
-     * True if messages with this targetting must be procesed by the server.
+     * True if messages with this targeting must be processed by the server.
      */
     public boolean isServers() {
         return servers;

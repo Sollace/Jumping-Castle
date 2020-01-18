@@ -1,12 +1,12 @@
-package com.minelittlepony.jumpingcastle.payload;
+package com.minelittlepony.jumpingcastle.api.payload;
 
 import java.nio.charset.StandardCharsets;
 
 import io.netty.buffer.ByteBuf;
 
-public interface ByteBufBinaryPayload extends IBinaryPayload {
+interface ByteBufBinaryPayload extends BinaryPayload {
 
-    static IBinaryPayload of(ByteBuf buff) {
+    static BinaryPayload of(ByteBuf buff) {
         return (ByteBufBinaryPayload)(() -> buff);
     }
 
@@ -24,12 +24,18 @@ public interface ByteBufBinaryPayload extends IBinaryPayload {
     }
 
     @Override
+    default BinaryPayload writeInt(int b) {
+        buff().writeInt(b);
+        return this;
+    }
+
+    @Override
     default byte readByte() {
         return buff().readByte();
     }
 
     @Override
-    default IBinaryPayload writeByte(byte b) {
+    default BinaryPayload writeByte(byte b) {
         buff().writeByte(b);
         return this;
     }
@@ -50,25 +56,32 @@ public interface ByteBufBinaryPayload extends IBinaryPayload {
     }
 
     @Override
-    default IBinaryPayload writeLong(long l) {
+    default BinaryPayload writeLong(long l) {
         buff().writeLong(l);
         return this;
     }
 
     @Override
-    default IBinaryPayload reverse() {
+    default BinaryPayload reverse() {
         buff().readerIndex(0);
         return this;
     }
 
     @Override
-    default IBinaryPayload writeBytes(byte[] bytes) {
+    default byte[] readBytes(int len) {
+        byte[] data = new byte[len];
+        buff().readBytes(data);
+        return data;
+    }
+
+    @Override
+    default BinaryPayload writeBytes(byte[] bytes) {
         buff().writeBytes(bytes);
         return this;
     }
 
     @Override
-    default IBinaryPayload writeString(String s) {
+    default BinaryPayload writeString(String s) {
         buff().writeInt(s.getBytes(StandardCharsets.UTF_8).length);
         buff().writeCharSequence(s, StandardCharsets.UTF_8);
         return this;
