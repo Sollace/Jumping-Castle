@@ -12,14 +12,14 @@ public interface Channel {
      * @param messageType   The message type being recieved.
      * @param handler       A handler instance to handle the message.
      */
-    <T extends Message> Channel listenFor(Class<T> messageType, Handler<T> handler);
+    <T extends Message> Channel listenFor(Class<T> messageType, Message.Handler<T> handler);
 
     /**
      * Registers a handler for a specific message type transmitted over this channel.
      *
      * @param messageType   The message type being recieved.
      */
-    <T extends Message & Handler<T>> Channel listenFor(Class<T> messageType);
+    <T extends Message & Message.Handler<T>> Channel listenFor(Class<T> messageType);
 
     /**
      * Gets the minecraft server

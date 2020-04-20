@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.minelittlepony.jumpingcastle.api.Channel;
 import com.minelittlepony.jumpingcastle.api.Message;
-import com.minelittlepony.jumpingcastle.api.Handler;
 import com.minelittlepony.jumpingcastle.api.Target;
 import com.minelittlepony.jumpingcastle.api.payload.BinaryPayload;
 
@@ -26,13 +25,13 @@ class ChannelImpl implements Channel {
     }
 
     @Override
-    public <T extends Message> Channel listenFor(Class<T> messageType, Handler<T> handler) {
+    public <T extends Message> Channel listenFor(Class<T> messageType, Message.Handler<T> handler) {
         handlers.put(Message.identifier(messageType), new Entry<T>(messageType, handler));
         return this;
     }
 
     @Override
-    public <T extends Message & Handler<T>> Channel listenFor(Class<T> messageType) {
+    public <T extends Message & Message.Handler<T>> Channel listenFor(Class<T> messageType) {
         return listenFor(messageType, null);
     }
 
@@ -44,19 +43,19 @@ class ChannelImpl implements Channel {
 
     @Override
     public Channel send(Message message, Target target) {
-        JumpingClientImpl.instance().getBus().sendToServer(name, Message.identifier(message), message, target);
+        JumpingClientImpl.instance().getBus().sendToServer(name, message.identifier(), message, target);
         return this;
     }
 
     @Override
     public Channel respond(Message message, UUID recipient) {
-        JumpingClientImpl.instance().getBus().sendToClient(name, Message.identifier(message), message, recipient);
+        JumpingClientImpl.instance().getBus().sendToClient(name, message.identifier(), message, recipient);
         return this;
     }
 
     @Override
     public Channel broadcast(Message message) {
-        JumpingServerImpl.INSTANCE.broadcast(name, Message.identifier(message), message);
+        JumpingServerImpl.INSTANCE.broadcast(name, message.identifier(), message);
         return this;
     }
 
@@ -71,11 +70,11 @@ class ChannelImpl implements Channel {
     }
 
     private class Entry<T extends Message> {
-        private final Handler<T> handler;
+        private final Message.Handler<T> handler;
 
         private final Class<T> handleType;
 
-        private Entry(Class<T> handleType, Handler<T> handler) {
+        private Entry(Class<T> handleType, Message.Handler<T> handler) {
             this.handleType = handleType;
             this.handler = handler;
         }
@@ -85,8 +84,8 @@ class ChannelImpl implements Channel {
             Exceptions.logged(() -> {
                 T message = payload.readBinary(handleType);
 
-                if (message instanceof Handler) {
-                    ((Handler<T>) message).onPayload(message, ChannelImpl.this);
+                if (message instanceof Message.Handler) {
+                    ((Message.Handler<T>) message).onPayload(message, ChannelImpl.this);
                 } else {
                     handler.onPayload(message, ChannelImpl.this);
                 }

@@ -1,14 +1,6 @@
 package com.minelittlepony.jumpingcastle.api.payload;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 import javax.annotation.Nullable;
-
-import com.minelittlepony.jumpingcastle.api.Message;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -56,25 +48,16 @@ public interface BinaryPayload {
     BinaryPayload reverse();
 
     @SuppressWarnings("unchecked")
-    default <T> T readBinary(Class<T> type) {
-        try (ObjectInputStream stream = new ObjectInputStream(new ByteArrayInputStream(readBytes(readInt())))) {
-            return (T)stream.readObject();
-        } catch (IOException | ClassNotFoundException ignored) {}
-
-        return null;
+    default <T extends Serializable<? super T>> T readBinary(Class<T> type) {
+        try {
+            return (T)type.newInstance().read(this);
+        } catch (InstantiationException | IllegalAccessException e) {
+            return null;
+        }
     }
 
-    default BinaryPayload writeBinary(Message message) {
-        try (ByteArrayOutputStream bytes = new ByteArrayOutputStream()) {
-            ObjectOutputStream stream = new ObjectOutputStream(bytes);
-
-            stream.writeObject(message);
-
-            byte[] data = bytes.toByteArray();
-            writeInt(data.length);
-            writeBytes(data);
-        } catch (IOException ignored) {}
-
+    default <T extends Serializable<T>> BinaryPayload writeBinary(T message) {
+        message.write(this);
         return this;
     }
 }
